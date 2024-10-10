@@ -2,36 +2,79 @@ import javax.swing.*;
 import java.awt.*;
 
 public class Main {
+    private static boolean isRunning = false;
+    private static final int HEIGHT = 40;
+    private static JPanel menuPanel;
+    private static JButton inicioButton;
+    private static Integer ESPERA = 1000;
+    private static Moviment mov;
+
     public static void main(String[] args) {
+        inici();
+        mov.iniciMoviment();
+    }
+
+    public static void inici() {
         SwingUtilities.invokeLater(() -> {
             JFrame frame = new JFrame("Robot Perímetre");
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
 
-            // Crear el menú superior
-            JPanel menuPanel = new JPanel();
+            // MENU ////////////////////////////////////////////////////////////
+            menuPanel = new JPanel();
             menuPanel.setBackground(Color.LIGHT_GRAY);
-            menuPanel.setPreferredSize(new Dimension(frame.getWidth(), 40)); // Altura del menú
+            menuPanel.setPreferredSize(new Dimension(frame.getWidth(), HEIGHT));
 
-            // Botón de inicio
-            JButton inicioButton = new JButton("Inicio");
+            inicioButton = new JButton("Inicio");
             inicioButton.addActionListener(e -> {
-                // Aquí puedes agregar la lógica para el botón de inicio
-                System.out.println("Botón Inicio presionado");
+                if(isRunning){
+
+                }
+                isRunning = !isRunning;
+                inicioButton.setText(isRunning ? "Detener" : "Inicio");
+
             });
 
-            // Agregar el botón al centro del menú
             menuPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
             menuPanel.add(inicioButton);
 
-            // Agregar el menú al frame
             frame.add(menuPanel, BorderLayout.NORTH);
+            ////////////////////////////////////////////////////////////////////
 
-            // Crear y agregar el escenario
-            Escenari escenari = new Escenari(frame);
+            // ESCENARI ////////////////////////////////////////////////////////
+            Escenari escenari = new Escenari();
+            frame.addComponentListener(new java.awt.event.ComponentAdapter() {
+                public void componentResized(java.awt.event.ComponentEvent evt) {
+                    int ampladaPantalla = frame.getContentPane().getWidth();
+                    int alturaPantalla = frame.getContentPane().getHeight();
+                    escenari.ajustarTamanyMatriu(ampladaPantalla, alturaPantalla);
+                }
+            });
             frame.add(escenari, BorderLayout.CENTER);
+            ////////////////////////////////////////////////////////////////////
+
+            // ROBOT ///////////////////////////////////////////////////////////
+            Robot robot = new Robot();
+            Tuple<Integer, Integer> posInici = escenari.getCentre();
+            if (!escenari.getEsParet(posInici.getFirst(), posInici.getSecond())) {
+                escenari.afegirComponent(robot, posInici.getFirst(), posInici.getSecond());
+                robot.setPosicioActual(posInici.getFirst(), posInici.getSecond());
+            } else {
+                for (int i = 1; i < Escenari.getFILES() - 1; i++) {
+                    for (int j = 1; j < Escenari.getCOLUMNES() - 1; j++) {
+                        if (!escenari.getEsParet(i, j)) {
+                            escenari.afegirComponent(robot, i, j);
+                            robot.setPosicioActual(i, j);
+                            break;
+                        }
+                    }
+                }
+            }
+            ////////////////////////////////////////////////////////////////////
 
             frame.setVisible(true);
+
+            mov = new Moviment(ESPERA, robot, escenari);
         });
     }
 }

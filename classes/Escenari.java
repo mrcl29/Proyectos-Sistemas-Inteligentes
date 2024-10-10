@@ -2,15 +2,12 @@ import javax.swing.*;
 import java.awt.*;
 
 public class Escenari extends JPanel {
-    private static final int TAMANY_X = 20; // Número de caselles en el eix X
-    private static final int TAMANY_Y = 10; // Número de caselles en el eix Y
+    private static final int COLUMNES = 21; // Número de caselles en el eix X
+    private static final int FILES = 11; // Número de caselles en el eix Y
     private Casella[][] matriu;
     private JPanel matriuPanell;
-    private Robot robot;
-    private JFrame parentFrame;
 
-    public Escenari(JFrame parentFrame) {
-        this.parentFrame = parentFrame;
+    public Escenari() {
         setLayout(new BorderLayout());
 
         // Inicialización panell de la matriu
@@ -18,15 +15,15 @@ public class Escenari extends JPanel {
         matriuPanell.setOpaque(false);
 
         // Inicialización de la matriu de Caselles
-        matriu = new Casella[TAMANY_Y][TAMANY_X];
+        matriu = new Casella[FILES][COLUMNES];
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.BOTH;
-        gbc.weightx = 1.0 / TAMANY_X;
-        gbc.weighty = 1.0 / TAMANY_Y;
+        gbc.weightx = 1.0 / COLUMNES;
+        gbc.weighty = 1.0 / FILES;
 
-        for (int i = 0; i < TAMANY_Y; i++) {
-            for (int j = 0; j < TAMANY_X; j++) {
-                if (i == 0 || i == TAMANY_Y - 1 || j == 0 || j == TAMANY_X - 1) {
+        for (int i = 0; i < FILES; i++) {
+            for (int j = 0; j < COLUMNES; j++) {
+                if (i == 0 || i == FILES - 1 || j == 0 || j == COLUMNES - 1) {
                     matriu[i][j] = new Casella(true);
                 } else {
                     matriu[i][j] = new Casella(false);
@@ -38,42 +35,20 @@ public class Escenari extends JPanel {
         }
 
         add(matriuPanell, BorderLayout.CENTER);
-
-        // Inicializar el robot
-        robot = new Robot();
-        colocarRobotEnInici();
-
-        // Definim que s'ajusti la matriu quan el tamany de la finestra canvia
-        parentFrame.addComponentListener(new java.awt.event.ComponentAdapter() {
-            public void componentResized(java.awt.event.ComponentEvent evt) {
-                ajustarTamanyMatriu();
-            }
-        });
     }
 
-    private void colocarRobotEnInici() {
-        for (int j = 0; j < TAMANY_X; j++) {
-            if (!matriu[1][j].isParet()) {
-                afegirComponent(robot, 1, j);
-                robot.setPosition(1, j);
-                break;
-            }
-        }
-    }
+    public void ajustarTamanyMatriu(int width, int height) {
+        int ampladaPantalla = width;
+        int alturaPantalla = height;
 
-    private void ajustarTamanyMatriu() {
-        int ampladaPantalla = parentFrame.getContentPane().getWidth();
-        int alturaPantalla = parentFrame.getContentPane().getHeight();
-        int alturaMenu = parentFrame.getJMenuBar().getHeight();
-
-        double proporcioMatriu = (double) TAMANY_X / TAMANY_Y;
-        double proporcionPantalla = (double) ampladaPantalla / (alturaPantalla - alturaMenu);
+        double proporcioMatriu = (double) COLUMNES / FILES;
+        double proporcionPantalla = (double) ampladaPantalla / (alturaPantalla - Menu.getHeight());
 
         int ampladaMatriu, alturaMatriu;
 
         if (proporcionPantalla > proporcioMatriu) {
             // Ajustar por altura
-            alturaMatriu = alturaPantalla - alturaMenu;
+            alturaMatriu = alturaPantalla - Menu.getHeight();
             ampladaMatriu = (int) (alturaMatriu * proporcioMatriu);
         } else {
             // Ajustar por anchura
@@ -86,28 +61,37 @@ public class Escenari extends JPanel {
     }
 
     public void afegirComponent(Component component, int fila, int columna) {
-        if (fila >= 0 && fila < TAMANY_Y && columna >= 0 && columna < TAMANY_X) {
-            matriu[fila][columna].removeAll();  // Eliminar componentes anteriores
+        if (fila >= 0 && fila < FILES && columna >= 0 && columna < COLUMNES) {
+            matriu[fila][columna].removeAll(); // Eliminar componentes anteriores
             if (component instanceof Robot) {
                 matriu[fila][columna].setLayout(new BorderLayout());
                 matriu[fila][columna].add(component, BorderLayout.CENTER);
-                matriu[fila][columna].setConteRobot(true);  // Marcar que contiene un robot
+                matriu[fila][columna].setConteRobot(true); // Marcar que contiene un robot
             } else {
                 matriu[fila][columna].add(component);
-                matriu[fila][columna].setConteRobot(false);  // Marcar que no contiene un robot
+                matriu[fila][columna].setConteRobot(false); // Marcar que no contiene un robot
             }
             matriu[fila][columna].revalidate();
             matriu[fila][columna].repaint();
         }
     }
 
-    // GETTERS
-
-    public Casella[][] getMatriu() {
-        return matriu;
+    public static int getFILES() {
+        return FILES;
     }
 
-    public Robot getRobot() {
-        return robot;
+    public static int getCOLUMNES() {
+        return COLUMNES;
+    }
+
+    public boolean getEsParet(int fila, int columna){
+        return matriu[fila][columna].isParet();
+    }
+
+    public Tuple<Integer, Integer> getCentre(){ 
+        int columna = Math.round(COLUMNES / 2);
+        int fila = Math.round(FILES / 2);
+        Tuple<Integer, Integer> centre = new Tuple<>(fila, columna);
+        return centre;
     }
 }

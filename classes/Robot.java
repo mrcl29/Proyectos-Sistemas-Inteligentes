@@ -1,21 +1,18 @@
-
 import javax.swing.*;
 import java.awt.*;
-import java.net.URL;
 
 public class Robot extends JPanel {
-    private static final ImageIcon robotIcon = new ImageIcon("assets/robot.png");
-    private int fila;
-    private int columna;
-    URL path = getClass().getResource("assets/robot.png");
+    private static ImageIcon robotIcon;
+    private static final String path = "assets/robot.png";
+    private Tuple<Integer, Integer> posicioActual = new Tuple<Integer,Integer>(null, null);
 
     public Robot() {
+        try {
+            robotIcon = new ImageIcon(path);
+        } catch (Error e) {
+            System.err.print("Ha hagut un error amb sa imatge seleccionada");
+        }
         setOpaque(false);
-    }
-
-    public void setPosition(int fila, int columna) {
-        this.fila = fila;
-        this.columna = columna;
     }
 
     @Override
@@ -31,11 +28,31 @@ public class Robot extends JPanel {
         }
     }
 
-    public int getFila() {
-        return fila;
+    public Integer getFila() {
+        return posicioActual.getFirst();
     }
 
-    public int getColumna() {
-        return columna;
+    public Integer getColumna() {
+        return posicioActual.getSecond();
+    }
+
+    public void setPosicioActual(Integer fila, Integer columna){
+        posicioActual = new Tuple<>(fila, columna);
+    }
+
+    public void movimentNord(){
+        posicioActual.setFirst(posicioActual.getFirst() + 1);
+    }
+
+    public void movimentEst(){
+        posicioActual.setSecond(posicioActual.getSecond() + 1);
+    }
+
+    public void movimentSud(){
+        posicioActual.setFirst(posicioActual.getFirst() - 1);
+    }
+
+    public void movimentOest(){
+        posicioActual.setSecond(posicioActual.getSecond() - 1);
     }
 }

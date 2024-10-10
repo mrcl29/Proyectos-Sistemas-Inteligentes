@@ -7,7 +7,7 @@ public class Casella extends JPanel {
     private boolean editable;
     private static boolean arrastrant = false;
     private static boolean pintantParets = false;
-    private boolean conteRobot = false; // Nueva variable para indicar si contiene un robot
+    private boolean conteRobot = false;
 
     public Casella(boolean esParet) {
         this.paret = esParet;
@@ -62,7 +62,6 @@ public class Casella extends JPanel {
         }
     }
 
-    // Nuevo método para establecer si la casilla contiene un robot
     public void setConteRobot(boolean conteRobot) {
         this.conteRobot = conteRobot;
     }
