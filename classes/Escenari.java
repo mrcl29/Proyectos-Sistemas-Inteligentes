@@ -2,8 +2,8 @@ import javax.swing.*;
 import java.awt.*;
 
 public class Escenari extends JFrame {
-    private static final int TAMANY_X = 30; // Número de caselles en el eix X
-    private static final int TAMANY_Y = 20; // Número de caselles en el eix Y
+    private static final int TAMANY_X = 20; // Número de caselles en el eix X
+    private static final int TAMANY_Y = 10; // Número de caselles en el eix Y
     private Casella[][] matriu;
     private JPanel matriuPanell;
 
@@ -26,7 +26,11 @@ public class Escenari extends JFrame {
 
         for (int i = 0; i < TAMANY_Y; i++) {
             for (int j = 0; j < TAMANY_X; j++) {
-                matriu[i][j] = new Casella();
+                if(i == 0 || i == TAMANY_Y - 1 || j == 0 || j == TAMANY_X - 1){
+                    matriu[i][j] = new Casella(true);    
+                }else{
+                    matriu[i][j] = new Casella(false);    
+                }
                 gbc.gridx = j;
                 gbc.gridy = i;
                 matriuPanell.add(matriu[i][j], gbc);
