@@ -64,6 +64,7 @@ public class Casella extends JPanel {
 
     public void setConteRobot(boolean conteRobot) {
         this.conteRobot = conteRobot;
+        repaint();
     }
 
     @Override

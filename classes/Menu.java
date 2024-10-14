@@ -9,8 +9,11 @@ public class Menu {
     private JPanel menuPanel;
     private JButton inicioButton;
     private boolean isRunning = false;
+    private Robot robot; // Referencia al robot que se creó en Escenari
 
-    public Menu(int width, Runnable onStartStop){
+    public Menu(int width, Robot robot) {
+        this.robot = robot; // Robot se pasa como parámetro desde Main
+
         menuPanel = new JPanel();
         menuPanel.setBackground(Color.LIGHT_GRAY);
         menuPanel.setPreferredSize(new Dimension(width, HEIGHT));
@@ -19,7 +22,7 @@ public class Menu {
         inicioButton.addActionListener(e -> {
             isRunning = !isRunning;
             inicioButton.setText(isRunning ? "Detener" : "Inicio");
-            onStartStop.run();
+            onStartStop();
         });
 
         menuPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
@@ -36,5 +39,13 @@ public class Menu {
 
     public boolean isRunning() {
         return isRunning;
+    }
+
+    private void onStartStop() {
+        if (isRunning) {
+            robot.iniciarMovimentPerimetre();  // Iniciar movimiento
+        } else {
+            robot.detenerMovimentPerimetre();  // Detener movimiento
+        }
     }
 }

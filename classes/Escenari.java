@@ -2,19 +2,20 @@ import javax.swing.*;
 import java.awt.*;
 
 public class Escenari extends JPanel {
-    private static final int COLUMNES = 21; // Número de caselles en el eix X
-    private static final int FILES = 11; // Número de caselles en el eix Y
-    private Casella[][] matriu;
+    private static final int COLUMNES = 21;
+    private static final int FILES = 11;
+    public Casella[][] matriu;
     private JPanel matriuPanell;
+    private Robot robot;
 
     public Escenari() {
         setLayout(new BorderLayout());
 
-        // Inicialización panell de la matriu
+        // Inicialización del panel de la matriz
         matriuPanell = new JPanel(new GridBagLayout());
         matriuPanell.setOpaque(false);
 
-        // Inicialización de la matriu de Caselles
+        // Inicialización de la matriz de Caselles
         matriu = new Casella[FILES][COLUMNES];
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.BOTH;
@@ -23,11 +24,7 @@ public class Escenari extends JPanel {
 
         for (int i = 0; i < FILES; i++) {
             for (int j = 0; j < COLUMNES; j++) {
-                if (i == 0 || i == FILES - 1 || j == 0 || j == COLUMNES - 1) {
-                    matriu[i][j] = new Casella(true);
-                } else {
-                    matriu[i][j] = new Casella(false);
-                }
+                matriu[i][j] = new Casella(i == 0 || i == FILES - 1 || j == 0 || j == COLUMNES - 1);
                 gbc.gridx = j;
                 gbc.gridy = i;
                 matriuPanell.add(matriu[i][j], gbc);
@@ -35,63 +32,43 @@ public class Escenari extends JPanel {
         }
 
         add(matriuPanell, BorderLayout.CENTER);
+
+        // Crear y agregar el robot al centro, pero no iniciar su movimiento
+        robot = new Robot(this);
+        afegirComponent(robot, getCentre().getFirst(), getCentre().getSecond());
     }
 
-    public void ajustarTamanyMatriu(int width, int height) {
-        int ampladaPantalla = width;
-        int alturaPantalla = height;
-
-        double proporcioMatriu = (double) COLUMNES / FILES;
-        double proporcionPantalla = (double) ampladaPantalla / (alturaPantalla - Menu.getHeight());
-
-        int ampladaMatriu, alturaMatriu;
-
-        if (proporcionPantalla > proporcioMatriu) {
-            // Ajustar por altura
-            alturaMatriu = alturaPantalla - Menu.getHeight();
-            ampladaMatriu = (int) (alturaMatriu * proporcioMatriu);
-        } else {
-            // Ajustar por anchura
-            ampladaMatriu = ampladaPantalla;
-            alturaMatriu = (int) (ampladaMatriu / proporcioMatriu);
-        }
-
-        matriuPanell.setPreferredSize(new Dimension(ampladaMatriu, alturaMatriu));
-        matriuPanell.revalidate();
+    public Robot getRobot() {
+        return robot;
     }
 
     public void afegirComponent(Component component, int fila, int columna) {
         if (fila >= 0 && fila < FILES && columna >= 0 && columna < COLUMNES) {
-            matriu[fila][columna].removeAll(); // Eliminar componentes anteriores
+            matriu[fila][columna].removeAll();
             if (component instanceof Robot) {
                 matriu[fila][columna].setLayout(new BorderLayout());
                 matriu[fila][columna].add(component, BorderLayout.CENTER);
-                matriu[fila][columna].setConteRobot(true); // Marcar que contiene un robot
-            } else {
-                matriu[fila][columna].add(component);
-                matriu[fila][columna].setConteRobot(false); // Marcar que no contiene un robot
+                matriu[fila][columna].setConteRobot(true);
             }
             matriu[fila][columna].revalidate();
             matriu[fila][columna].repaint();
         }
     }
 
-    public static int getFILES() {
-        return FILES;
+    public void eliminarComponent(int fila, int columna) {
+        if (fila >= 0 && fila < FILES && columna >= 0 && columna < COLUMNES) {
+            matriu[fila][columna].removeAll();
+            matriu[fila][columna].setConteRobot(false);
+            matriu[fila][columna].revalidate();
+            matriu[fila][columna].repaint();
+        }
     }
 
-    public static int getCOLUMNES() {
-        return COLUMNES;
-    }
-
-    public boolean getEsParet(int fila, int columna){
+    public boolean getEsParet(int fila, int columna) {
         return matriu[fila][columna].isParet();
     }
 
-    public Tuple<Integer, Integer> getCentre(){ 
-        int columna = Math.round(COLUMNES / 2);
-        int fila = Math.round(FILES / 2);
-        Tuple<Integer, Integer> centre = new Tuple<>(fila, columna);
-        return centre;
+    public Tuple<Integer, Integer> getCentre() {
+        return new Tuple<>(FILES / 2, COLUMNES / 2);
     }
 }
