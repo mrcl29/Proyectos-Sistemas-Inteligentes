@@ -1,9 +1,8 @@
 import javax.swing.*;
+
 import java.awt.*;
 
 public class Escenari extends JPanel {
-    private static final int COLUMNES = 21;
-    private static final int FILES = 11;
     public Casella[][] matriu;
     private JPanel matriuPanell;
     private Robot robot;
@@ -16,15 +15,15 @@ public class Escenari extends JPanel {
         matriuPanell.setOpaque(false);
 
         // Inicialización de la matriz de Caselles
-        matriu = new Casella[FILES][COLUMNES];
+        matriu = new Casella[Main.FILES][Main.COLUMNES];
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.BOTH;
-        gbc.weightx = 1.0 / COLUMNES;
-        gbc.weighty = 1.0 / FILES;
+        gbc.weightx = 1.0 / Main.COLUMNES;
+        gbc.weighty = 1.0 / Main.FILES;
 
-        for (int i = 0; i < FILES; i++) {
-            for (int j = 0; j < COLUMNES; j++) {
-                matriu[i][j] = new Casella(i == 0 || i == FILES - 1 || j == 0 || j == COLUMNES - 1);
+        for (int i = 0; i < Main.FILES; i++) {
+            for (int j = 0; j < Main.COLUMNES; j++) {
+                matriu[i][j] = new Casella(i == 0 || i == Main.FILES - 1 || j == 0 || j == Main.COLUMNES - 1);
                 gbc.gridx = j;
                 gbc.gridy = i;
                 matriuPanell.add(matriu[i][j], gbc);
@@ -43,7 +42,7 @@ public class Escenari extends JPanel {
     }
 
     public void afegirComponent(Component component, int fila, int columna) {
-        if (fila >= 0 && fila < FILES && columna >= 0 && columna < COLUMNES) {
+        if (fila >= 0 && fila < Main.FILES && columna >= 0 && columna < Main.COLUMNES) {
             matriu[fila][columna].removeAll();
             if (component instanceof Robot) {
                 matriu[fila][columna].setLayout(new BorderLayout());
@@ -56,7 +55,7 @@ public class Escenari extends JPanel {
     }
 
     public void eliminarComponent(int fila, int columna) {
-        if (fila >= 0 && fila < FILES && columna >= 0 && columna < COLUMNES) {
+        if (fila >= 0 && fila < Main.FILES && columna >= 0 && columna < Main.COLUMNES) {
             matriu[fila][columna].removeAll();
             matriu[fila][columna].setConteRobot(false);
             matriu[fila][columna].revalidate();
@@ -69,6 +68,6 @@ public class Escenari extends JPanel {
     }
 
     public Tuple<Integer, Integer> getCentre() {
-        return new Tuple<>(FILES / 2, COLUMNES / 2);
+        return new Tuple<>(Main.FILES / 2, Main.COLUMNES / 2);
     }
 }

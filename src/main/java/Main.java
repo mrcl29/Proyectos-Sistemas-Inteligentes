@@ -1,7 +1,12 @@
 import javax.swing.*;
+
 import java.awt.*;
 
 public class Main {
+    public static final int COLUMNES = 21;
+    public static final int FILES = 11;
+    public static final int VELOCITAT = 100;
+
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             JFrame frame = new JFrame("Robot Perímetre");

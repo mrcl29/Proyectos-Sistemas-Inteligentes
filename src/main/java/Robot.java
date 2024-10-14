@@ -1,10 +1,11 @@
 import javax.swing.*;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class Robot extends JPanel {
-    private static final String path = "assets/robot.png";
+    private static final String path = "src/main/resources/assets/robot.png";
     private int fila, columna;
     private Escenari escenari;
     private Timer timer;
@@ -17,7 +18,7 @@ public class Robot extends JPanel {
         this.fila = posInicial.getFirst();
         this.columna = posInicial.getSecond();
 
-        timer = new Timer(500, new ActionListener() {
+        timer = new Timer(Main.VELOCITAT, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 moureRobot();
