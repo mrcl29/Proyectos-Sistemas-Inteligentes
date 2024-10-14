@@ -43,9 +43,9 @@ public class Menu {
 
     private void onStartStop() {
         if (isRunning) {
-            robot.iniciarMovimentPerimetre();  // Iniciar movimiento
+            robot.iniciarMovimentPerimetre(); // Iniciar movimiento
         } else {
-            robot.detenerMovimentPerimetre();  // Detener movimiento
+            robot.detenerMovimentPerimetre(); // Detener movimiento
         }
     }
 }

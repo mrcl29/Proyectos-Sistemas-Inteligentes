@@ -8,22 +8,21 @@ public class Robot extends JPanel {
     private int fila, columna;
     private Escenari escenari;
     private Timer timer;
-    private int direction = 0; // 0 = derecha, 1 = abajo, 2 = izquierda, 3 = arriba
+    private int direction = 3; // 3 = arriba, 0 = derecha, 1 = abajo, 2 = izquierda
+    private boolean siguiendoPared = false;
 
     public Robot(Escenari escenari) {
         this.escenari = escenari;
         Tuple<Integer, Integer> posInicial = escenari.getCentre();
         this.fila = posInicial.getFirst();
         this.columna = posInicial.getSecond();
-        
-        // Configuración del Timer para el movimiento
+
         timer = new Timer(500, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 moureRobot();
             }
         });
-
         setOpaque(false);
     }
 
@@ -41,19 +40,82 @@ public class Robot extends JPanel {
 
     private void moureRobot() {
         escenari.eliminarComponent(fila, columna);
-        switch (direction) {
-            case 0: if (!escenari.getEsParet(fila, columna + 1)) { columna++; } else { direction = 1; } break;
-            case 1: if (!escenari.getEsParet(fila + 1, columna)) { fila++; } else { direction = 2; } break;
-            case 2: if (!escenari.getEsParet(fila, columna - 1)) { columna--; } else { direction = 3; } break;
-            case 3: if (!escenari.getEsParet(fila - 1, columna)) { fila--; } else { direction = 0; } break;
+        
+        if (!siguiendoPared) {
+            // Moverse hacia arriba hasta encontrar una pared
+            if (!escenari.getEsParet(fila - 1, columna)) {
+                fila--;
+            } else {
+                siguiendoPared = true;
+                direction = 0; // Cambiar a derecha cuando encuentra la pared
+            }
+        } else {
+            // Seguir la pared
+            boolean moved = false;
+            int attempts = 0;
+            
+            while (!moved && attempts < 4) {
+                switch (direction) {
+                    case 0: // Derecha
+                        if (!escenari.getEsParet(fila, columna + 1)) {
+                            columna++;
+                            moved = true;
+                        } else {
+                            direction = 1; // Cambiar a abajo
+                        }
+                        break;
+                    case 1: // Abajo
+                        if (!escenari.getEsParet(fila + 1, columna)) {
+                            fila++;
+                            moved = true;
+                        } else {
+                            direction = 2; // Cambiar a izquierda
+                        }
+                        break;
+                    case 2: // Izquierda
+                        if (!escenari.getEsParet(fila, columna - 1)) {
+                            columna--;
+                            moved = true;
+                        } else {
+                            direction = 3; // Cambiar a arriba
+                        }
+                        break;
+                    case 3: // Arriba
+                        if (!escenari.getEsParet(fila - 1, columna)) {
+                            fila--;
+                            moved = true;
+                        } else {
+                            direction = 0; // Cambiar a derecha
+                        }
+                        break;
+                }
+                attempts++;
+            }
+            
+            // Intentar girar a la izquierda (siguiendo la pared)
+            if (moved) {
+                int leftDirection = (direction + 3) % 4;
+                boolean canTurnLeft = false;
+                
+                switch (leftDirection) {
+                    case 3: canTurnLeft = !escenari.getEsParet(fila - 1, columna); break;
+                    case 0: canTurnLeft = !escenari.getEsParet(fila, columna + 1); break;
+                    case 1: canTurnLeft = !escenari.getEsParet(fila + 1, columna); break;
+                    case 2: canTurnLeft = !escenari.getEsParet(fila, columna - 1); break;
+                }
+                
+                if (canTurnLeft) {
+                    direction = leftDirection;
+                }
+            }
         }
+        
         escenari.afegirComponent(this, fila, columna);
     }
 
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        // Lógica para dibujar el robot si la imagen existe
         ImageIcon robotIcon = new ImageIcon(path);
         if (robotIcon != null) {
             Image img = robotIcon.getImage();

@@ -10,7 +10,7 @@ public class Main {
 
             // Crear el escenario y el robot
             Escenari escenari = new Escenari();
-            Robot robot = escenari.getRobot();  // Obtén el robot creado en el Escenari
+            Robot robot = escenari.getRobot(); // Obtén el robot creado en el Escenari
 
             // Crear el menú y controlar el movimiento del robot
             Menu menu = new Menu(frame.getWidth(), robot);
