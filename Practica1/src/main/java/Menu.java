@@ -18,10 +18,10 @@ public class Menu {
         menuPanel.setBackground(Color.LIGHT_GRAY);
         menuPanel.setPreferredSize(new Dimension(width, HEIGHT));
 
-        inicioButton = new JButton("Inicio");
+        inicioButton = new JButton("Inici");
         inicioButton.addActionListener(e -> {
             isRunning = !isRunning;
-            inicioButton.setText(isRunning ? "Detener" : "Inicio");
+            inicioButton.setText(isRunning ? "Aturar" : "Inici");
             onStartStop();
         });
 
@@ -43,9 +43,9 @@ public class Menu {
 
     private void onStartStop() {
         if (isRunning) {
-            robot.iniciarMovimentPerimetre(); // Iniciar movimiento
+            robot.iniciarMovimentPerimetre(); // Iniciar movimient
         } else {
-            robot.detenerMovimentPerimetre(); // Detener movimiento
+            robot.aturarMovimentPerimetre(); // Aturar moviment
         }
     }
 }

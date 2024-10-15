@@ -1,26 +1,27 @@
 import javax.swing.*;
-
 import java.awt.*;
 
 public class Main {
     public static final int COLUMNES = 21;
     public static final int FILES = 11;
-    public static final int VELOCITAT = 100;
+    public static final int VELOCITAT = 100;// Milisegons
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
+            // Crear finestra de visualització
             JFrame frame = new JFrame("Robot Perímetre");
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
 
-            // Crear el escenario y el robot
+            // Crear l'escenari i el robot
             Escenari escenari = new Escenari();
-            Robot robot = escenari.getRobot(); // Obtén el robot creado en el Escenari
+            Robot robot = new Robot(escenari);
+            escenari.afegirComponent(robot, FILES/2, COLUMNES/2);// Colocar el robot al centre de l'escenari
 
-            // Crear el menú y controlar el movimiento del robot
+            // Crear el menú y controlar el moviment del robot
             Menu menu = new Menu(frame.getWidth(), robot);
 
-            // Agregar el menú y el escenario al frame
+            // Agregar el menú y l'escenari a la finestra
             frame.add(menu.getMenuPanel(), BorderLayout.NORTH);
             frame.add(escenari, BorderLayout.CENTER);
             frame.setVisible(true);

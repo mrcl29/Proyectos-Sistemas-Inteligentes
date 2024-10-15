@@ -5,7 +5,6 @@ import java.awt.*;
 public class Escenari extends JPanel {
     public Casella[][] matriu;
     private JPanel matriuPanell;
-    private Robot robot;
 
     public Escenari() {
         setLayout(new BorderLayout());
@@ -31,14 +30,6 @@ public class Escenari extends JPanel {
         }
 
         add(matriuPanell, BorderLayout.CENTER);
-
-        // Crear y agregar el robot al centro, pero no iniciar su movimiento
-        robot = new Robot(this);
-        afegirComponent(robot, getCentre().getFirst(), getCentre().getSecond());
-    }
-
-    public Robot getRobot() {
-        return robot;
     }
 
     public void afegirComponent(Component component, int fila, int columna) {
@@ -64,10 +55,6 @@ public class Escenari extends JPanel {
     }
 
     public boolean getEsParet(int fila, int columna) {
-        return matriu[fila][columna].isParet();
-    }
-
-    public Tuple<Integer, Integer> getCentre() {
-        return new Tuple<>(Main.FILES / 2, Main.COLUMNES / 2);
+        return matriu[fila][columna].esParet();
     }
 }

@@ -3,7 +3,7 @@ import java.awt.*;
 import java.awt.event.*;
 
 public class Casella extends JPanel {
-    private boolean paret;
+    public boolean paret;
     private boolean editable;
     private static boolean arrastrant = false;
     private static boolean pintantParets = false;
@@ -40,7 +40,7 @@ public class Casella extends JPanel {
         addMouseMotionListener(mouseAdapter);
     }
 
-    public boolean isParet() {
+    public boolean esParet() {
         return paret;
     }
 
@@ -49,10 +49,6 @@ public class Casella extends JPanel {
             this.paret = paret;
             repaint();
         }
-    }
-
-    public boolean isEditable() {
-        return editable;
     }
 
     private void toggleParet() {
