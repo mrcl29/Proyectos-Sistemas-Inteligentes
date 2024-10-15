@@ -5,7 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class Robot extends JPanel {
-    private static final String path = "src/main/resources/assets/robot.png";
+    private static final String path = "Practica1/src/main/resources/assets/robot.png";
     private int fila, columna;
     private Escenari escenari;
     private Timer timer;
