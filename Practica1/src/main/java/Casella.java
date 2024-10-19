@@ -8,29 +8,40 @@ public class Casella extends JPanel {
     private static boolean arrastrant = false;
     private static boolean pintantParets = false;
     private boolean conteRobot = false;
+    public MouseAdapter mouseAdapter;
 
-    public Casella(boolean esParet) {
+    public Casella(boolean esParet, int fila, int columna) {
         this.paret = esParet;
         this.editable = !esParet;
 
-        MouseAdapter mouseAdapter = new MouseAdapter() {
+        mouseAdapter = new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                if (editable && !conteRobot) {
+                if (SwingUtilities.isLeftMouseButton(e) && editable && !conteRobot) {
                     arrastrant = true;
                     pintantParets = !paret;
                     toggleParet();
+                } else if (SwingUtilities.isRightMouseButton(e) && !paret && !conteRobot) {
+                    setLayout(new BorderLayout());
+                    add(Main.robot, BorderLayout.CENTER);
+                    setConteRobot(true);
+                    Escenari.matriu[Main.fila][Main.columna].removeAll();
+                    Escenari.matriu[Main.fila][Main.columna].setConteRobot(false);
+                    Main.fila = fila;
+                    Main.columna = columna;
                 }
             }
 
             @Override
             public void mouseReleased(MouseEvent e) {
-                arrastrant = false;
+                if (SwingUtilities.isLeftMouseButton(e)) {
+                    arrastrant = false;
+                }
             }
 
             @Override
             public void mouseEntered(MouseEvent e) {
-                if (editable && arrastrant && !conteRobot) {
+                if (SwingUtilities.isLeftMouseButton(e) && editable && arrastrant && !conteRobot) {
                     setParet(pintantParets);
                 }
             }

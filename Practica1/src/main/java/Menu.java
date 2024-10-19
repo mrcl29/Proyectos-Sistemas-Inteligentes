@@ -7,10 +7,8 @@ public class Menu {
     private JPanel menuPanel;
     private JButton inicioButton;
     private boolean isRunning = false;
-    private Robot robot; // Referencia al robot que se creó en Escenari
 
     public Menu(int width, Robot robot) {
-        this.robot = robot; // Robot se pasa como parámetro desde Main
 
         menuPanel = new JPanel();
         menuPanel.setBackground(Color.LIGHT_GRAY);
@@ -50,9 +48,13 @@ public class Menu {
 
     private void onStartStop() {
         if (isRunning) {
-            robot.iniciarMovimentPerimetre(); // Iniciar movimiento
+            if (!Main.timer.isRunning()) {
+                Main.timer.start();
+            } // Iniciar movimiento
         } else {
-            robot.aturarMovimentPerimetre(); // Aturar movimiento
+            if (Main.timer.isRunning()) {
+                Main.timer.stop();
+            } // Aturar movimiento
         }
     }
 

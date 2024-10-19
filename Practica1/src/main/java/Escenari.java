@@ -3,7 +3,7 @@ import javax.swing.*;
 import java.awt.*;
 
 public class Escenari extends JPanel {
-    public Casella[][] matriu;
+    public static Casella[][] matriu;
     private JPanel matriuPanell;
 
     public Escenari() {
@@ -22,7 +22,7 @@ public class Escenari extends JPanel {
 
         for (int i = 0; i < Main.FILES; i++) {
             for (int j = 0; j < Main.COLUMNES; j++) {
-                matriu[i][j] = new Casella(i == 0 || i == Main.FILES - 1 || j == 0 || j == Main.COLUMNES - 1);
+                matriu[i][j] = new Casella(i == 0 || i == Main.FILES - 1 || j == 0 || j == Main.COLUMNES - 1, i, j);
                 gbc.gridx = j;
                 gbc.gridy = i;
                 matriuPanell.add(matriu[i][j], gbc);
