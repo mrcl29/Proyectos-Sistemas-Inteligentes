@@ -2,8 +2,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Random;
 
 public class Robot extends JPanel {
+    Random rand = new Random();
     private static final String path = "Practica1/src/main/resources/assets/robot.png";
     private final ImageIcon robotIcon = new ImageIcon(path);
     private int fila, columna; // Posició actual del robot
@@ -14,11 +16,11 @@ public class Robot extends JPanel {
 
     public Robot(Escenari escenari) {
         this.escenari = escenari;
-        this.fila = Main.FILES/2;
-        this.columna = Main.COLUMNES/2;
-        if(paretsDiagonals() && paretsAlCostat() != ""){
+        fila = rand.nextInt(Main.FILES - 2) + 1; // Genera un número entre 1 y Main.FILES - 2
+        columna = rand.nextInt(Main.COLUMNES - 2) + 1; // Genera un número entre 1 y Main.COLUMNES - 2
+        if (paretsDiagonals() && paretsAlCostat() != "") {
             this.seguintParet = true;
-        }else{
+        } else {
             this.seguintParet = false;
         }
 
@@ -46,109 +48,109 @@ public class Robot extends JPanel {
     private void moureRobot() {
         escenari.eliminarComponent(fila, columna);
 
-        if(!seguintParet){// Si no estaba seguint ninguna paret mirar si ara té alguna paret al costat
+        if (!seguintParet) {// Si no estaba seguint ninguna paret mirar si ara té alguna paret al costat
             String nova_direccio = paretsAlCostat();
-            if(nova_direccio != ""){// Si te una paret al costat donar-li la nova direcció a seguir
+            if (nova_direccio != "") {// Si te una paret al costat donar-li la nova direcció a seguir
                 direccio = nova_direccio;
                 seguintParet = true;
             }
         }
         switch (direccio) {
             case "NORD":
-                if (escenari.getEsParet(fila, columna-1)) {// Amb paret al costat (esquerre)
-                    if(!escenari.getEsParet(fila-1, columna)){// Sense paret al front (adalt)
+                if (escenari.getEsParet(fila, columna - 1)) {// Amb paret al costat (esquerre)
+                    if (!escenari.getEsParet(fila - 1, columna)) {// Sense paret al front (adalt)
                         fila--;// Moviment recte (adalt)
-                    }else{// Amb paret al front (adalt)
-                        // Gir al costat oposat de la paret (dreta)
+                    } else {// Amb paret al front (adalt)
+                            // Gir al costat oposat de la paret (dreta)
                         direccio = "EST";
                     }
-                }else{// Sense paret al costat (esquerre)
-                    if(!paretsDiagonals()){// No tenim parets a les diagonals
+                } else {// Sense paret al costat (esquerre)
+                    if (!paretsDiagonals()) {// No tenim parets a les diagonals
                         // Mirar les altres parets al costat
                         String nova_direccio = paretsAlCostat();
-                        if(nova_direccio == ""){// Sense parets als costats
+                        if (nova_direccio == "") {// Sense parets als costats
                             fila--;// Moviment recte (adalt)
                             seguintParet = false;// No segueix ninguna paret
                             break;
-                        }else{// Si hi ha alguna paret al costat seguir el seu perímetre
+                        } else {// Si hi ha alguna paret al costat seguir el seu perímetre
                             direccio = nova_direccio;
                         }
-                    }else{// Tenim parets diagonals
+                    } else {// Tenim parets diagonals
                         columna--;// Gir seguint el cantó de la paret (esquerra)
                         direccio = "OEST";
                     }
                 }
                 break;
             case "EST":
-                if (escenari.getEsParet(fila-1, columna)) {// Amb paret al costat (adalt)
-                    if(!escenari.getEsParet(fila, columna+1)){// Sense paret al front (dreta)
+                if (escenari.getEsParet(fila - 1, columna)) {// Amb paret al costat (adalt)
+                    if (!escenari.getEsParet(fila, columna + 1)) {// Sense paret al front (dreta)
                         columna++;// Moviment recte (dreta)
-                    }else{// Amb paret al front (dreta)
-                        // Gir al costat oposat de la paret (abaix)
+                    } else {// Amb paret al front (dreta)
+                            // Gir al costat oposat de la paret (abaix)
                         direccio = "SUD";
                     }
-                }else{// Sense paret al costat (adalt)
-                    if(!paretsDiagonals()){// No tenim parets a les diagonals
+                } else {// Sense paret al costat (adalt)
+                    if (!paretsDiagonals()) {// No tenim parets a les diagonals
                         // Mirar les altres parets al costat
                         String nova_direccio = paretsAlCostat();
-                        if(nova_direccio == ""){// Sense parets als costats
+                        if (nova_direccio == "") {// Sense parets als costats
                             columna++;// Moviment recte (dreta)
                             seguintParet = false;// No segueix ninguna paret
                             break;
-                        }else{// Si hi ha alguna paret al costat seguir el seu perímetre
+                        } else {// Si hi ha alguna paret al costat seguir el seu perímetre
                             direccio = nova_direccio;
                         }
-                    }else{// Tenim parets diagonals
+                    } else {// Tenim parets diagonals
                         fila--;// Gir seguint el cantó de la paret (adalt)
                         direccio = "NORD";
                     }
                 }
                 break;
             case "SUD":
-                if (escenari.getEsParet(fila, columna+1)) {// Amb paret al costat (dreta)
-                    if(!escenari.getEsParet(fila+1, columna)){// Sense paret al front (abaix)
+                if (escenari.getEsParet(fila, columna + 1)) {// Amb paret al costat (dreta)
+                    if (!escenari.getEsParet(fila + 1, columna)) {// Sense paret al front (abaix)
                         fila++;// Moviment recte (abaix)
-                    }else{// Amb paret al front (abaix)
-                        // Gir al costat oposat de la paret (esquerra)
+                    } else {// Amb paret al front (abaix)
+                            // Gir al costat oposat de la paret (esquerra)
                         direccio = "OEST";
                     }
-                }else{// Sense paret al costat (dreta)
-                    if(!paretsDiagonals()){// No tenim parets a les diagonals
+                } else {// Sense paret al costat (dreta)
+                    if (!paretsDiagonals()) {// No tenim parets a les diagonals
                         // Mirar les altres parets al costat
                         String nova_direccio = paretsAlCostat();
-                        if(nova_direccio == ""){// Sense parets als costats
+                        if (nova_direccio == "") {// Sense parets als costats
                             fila++;// Moviment recte (abaix)
                             seguintParet = false;// No segueix ninguna paret
                             break;
-                        }else{// Si hi ha alguna paret al costat seguir el seu perímetre
+                        } else {// Si hi ha alguna paret al costat seguir el seu perímetre
                             direccio = nova_direccio;
                         }
-                    }else{// Tenim parets diagonals
+                    } else {// Tenim parets diagonals
                         columna++;// Gir seguint el cantó de la paret (dreta)
                         direccio = "EST";
                     }
                 }
                 break;
             case "OEST":
-                if (escenari.getEsParet(fila+1, columna)) {// Amb paret al costat (abaix)
-                    if(!escenari.getEsParet(fila, columna-1)){// Sense paret al front (esquerra)
+                if (escenari.getEsParet(fila + 1, columna)) {// Amb paret al costat (abaix)
+                    if (!escenari.getEsParet(fila, columna - 1)) {// Sense paret al front (esquerra)
                         columna--;// Moviment recte (dreta)
-                    }else{// Amb paret al front (esquerra)
-                        // Gir al costat oposat de la paret (adalt)
+                    } else {// Amb paret al front (esquerra)
+                            // Gir al costat oposat de la paret (adalt)
                         direccio = "NORD";
                     }
-                }else{// Sense paret al costat (abaix)
-                    if(!paretsDiagonals()){// No tenim parets a les diagonals
+                } else {// Sense paret al costat (abaix)
+                    if (!paretsDiagonals()) {// No tenim parets a les diagonals
                         // Mirar les altres parets al costat
                         String nova_direccio = paretsAlCostat();
-                        if(nova_direccio == ""){// Sense parets als costats
+                        if (nova_direccio == "") {// Sense parets als costats
                             columna--;// Moviment recte (esquerra)
                             seguintParet = false;// No segueix ninguna paret
                             break;
-                        }else{// Si hi ha alguna paret al costat seguir el seu perímetre
+                        } else {// Si hi ha alguna paret al costat seguir el seu perímetre
                             direccio = nova_direccio;
                         }
-                    }else{// Tenim parets diagonals
+                    } else {// Tenim parets diagonals
                         fila++;// Gir seguint el cantó de la paret (abaix)
                         direccio = "SUD";
                     }
@@ -167,13 +169,13 @@ public class Robot extends JPanel {
     }
 
     private String paretsAlCostat() {
-        if(escenari.getEsParet(fila, columna-1)){
+        if (escenari.getEsParet(fila, columna - 1)) {
             return "NORD";
-        }else if(escenari.getEsParet(fila-1, columna)){
+        } else if (escenari.getEsParet(fila - 1, columna)) {
             return "EST";
-        }else if(escenari.getEsParet(fila, columna+1)){
+        } else if (escenari.getEsParet(fila, columna + 1)) {
             return "SUD";
-        }else if(escenari.getEsParet(fila+1, columna)){
+        } else if (escenari.getEsParet(fila + 1, columna)) {
             return "OEST";
         }
         return "";
@@ -190,4 +192,13 @@ public class Robot extends JPanel {
             g.drawImage(robotIcon.getImage(), x, y, width, height, this);
         }
     }
+
+    public int getFila() {
+        return fila;
+    }
+
+    public int getColumna() {
+        return columna;
+    }
+
 }

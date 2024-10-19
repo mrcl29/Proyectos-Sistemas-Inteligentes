@@ -16,7 +16,8 @@ public class Main {
             // Crear l'escenari i el robot
             Escenari escenari = new Escenari();
             Robot robot = new Robot(escenari);
-            escenari.afegirComponent(robot, FILES/2, COLUMNES/2);// Colocar el robot al centre de l'escenari
+            escenari.afegirComponent(robot, robot.getFila(), robot.getColumna());// Colocar el robot al centre de
+                                                                                 // l'escenari
 
             // Crear el menú y controlar el moviment del robot
             Menu menu = new Menu(frame.getWidth(), robot);

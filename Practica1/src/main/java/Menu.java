@@ -1,11 +1,9 @@
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import javax.swing.JButton;
-import javax.swing.JPanel;
+import java.awt.*;
+import javax.swing.*;
+import javax.swing.border.Border;
 
 public class Menu {
-    private static final int HEIGHT = 40;
+    public static final int HEIGHT = 50;
     private JPanel menuPanel;
     private JButton inicioButton;
     private boolean isRunning = false;
@@ -18,10 +16,19 @@ public class Menu {
         menuPanel.setBackground(Color.LIGHT_GRAY);
         menuPanel.setPreferredSize(new Dimension(width, HEIGHT));
 
-        inicioButton = new JButton("Inici");
+        // Crear el botón
+        inicioButton = new JButton("INICIAR");
+        inicioButton.setPreferredSize(new Dimension(120, 40)); // Ajustar tamaño del botón
+        inicioButton.setFont(new Font("Arial", Font.BOLD, 16)); // Cambiar la fuente y tamaño
+        inicioButton.setForeground(Color.WHITE); // Texto en blanco
+        inicioButton.setFocusPainted(false); // Eliminar borde de enfoque
+        inicioButton.setBorder(new RoundedBorder(10)); // Bordes redondeados
+        inicioButton.setBackground(new Color(70, 130, 180)); // Fondo color azul
+
+        // Cambiar texto al hacer clic y gestionar el evento
         inicioButton.addActionListener(e -> {
             isRunning = !isRunning;
-            inicioButton.setText(isRunning ? "Aturar" : "Inici");
+            inicioButton.setText(isRunning ? "ATURAR" : "INICIAR");
             onStartStop();
         });
 
@@ -43,9 +50,33 @@ public class Menu {
 
     private void onStartStop() {
         if (isRunning) {
-            robot.iniciarMovimentPerimetre(); // Iniciar movimient
+            robot.iniciarMovimentPerimetre(); // Iniciar movimiento
         } else {
-            robot.aturarMovimentPerimetre(); // Aturar moviment
+            robot.aturarMovimentPerimetre(); // Aturar movimiento
+        }
+    }
+
+    // Clase para crear bordes redondeados para el botón
+    private static class RoundedBorder implements Border {
+        private int radius;
+
+        public RoundedBorder(int radius) {
+            this.radius = radius;
+        }
+
+        @Override
+        public Insets getBorderInsets(Component c) {
+            return new Insets(radius + 1, radius + 1, radius + 1, radius + 1);
+        }
+
+        @Override
+        public boolean isBorderOpaque() {
+            return true;
+        }
+
+        @Override
+        public void paintBorder(Component c, Graphics g, int x, int y, int width, int height) {
+            g.drawRoundRect(x, y, width - 1, height - 1, radius, radius);
         }
     }
 }
