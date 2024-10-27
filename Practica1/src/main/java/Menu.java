@@ -3,7 +3,7 @@ import javax.swing.*;
 import javax.swing.border.Border;
 
 public class Menu {
-    public static final int HEIGHT = 50;
+    private static final int HEIGHT = 50;
     private JPanel menuPanel;
     private JButton inicioButton;
     private boolean isRunning = false;
@@ -32,10 +32,6 @@ public class Menu {
 
         menuPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
         menuPanel.add(inicioButton);
-    }
-
-    public static int getHeight() {
-        return HEIGHT;
     }
 
     public JPanel getMenuPanel() {
