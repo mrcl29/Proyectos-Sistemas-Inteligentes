@@ -2,8 +2,6 @@ package code;
 
 import javax.swing.*;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.BorderLayout;
 
 public class Main {
@@ -12,6 +10,10 @@ public class Main {
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
+
+            Variables.colocar = Constants.BUID;
+            Variables.nMonstres = 0;
+            Variables.nTresors = 0;
 
             boolean surt = false;
             while (!surt) {
@@ -39,19 +41,15 @@ public class Main {
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
 
-            Variables.timer = new Timer(500, new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                }
-            });
-
             Menu menu = new Menu(frame.getWidth());
             frame.add(menu, BorderLayout.NORTH);
 
             escenari = new Escenari();
             frame.add(escenari, BorderLayout.CENTER);
 
-            agent = new Agent(Constants.filaInicial, Constants.columnaInicial);
+            agent = new Agent(Constants.FILA_INICI, Constants.COLUMNA_INICI);
+
+            Variables.novaVelocitat(500);
 
             frame.setVisible(true);
         });

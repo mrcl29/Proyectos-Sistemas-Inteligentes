@@ -2,14 +2,26 @@ package code;
 
 import javax.swing.*;
 
-public class Variables {
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
+public class Variables extends Constants {
     public static int tamanyEscenari;
 
-    public static String colocar = Constants.BUID;
-    public static int nMonstres = 0;
-    public static int nTresors = 0;
+    public static Casella[][] matriuEscenari;
+
+    public static String colocar;
+    public static int nMonstres;
+    public static int nTresors;
 
     public static Timer timer;
+
+    public static void novaVelocitat(int velocitat) {
+        timer = new Timer(velocitat, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            }
+        });
+    }
 
 }

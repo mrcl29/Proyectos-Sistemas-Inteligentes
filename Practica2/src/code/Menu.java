@@ -11,6 +11,7 @@ public class Menu extends JPanel {
     private JButton monstreBoto;
     private JButton precipiciBoto;
     private JButton tresorBoto;
+    private JButton canviarVelocitatBoto;
 
     private boolean cercaIniciada = false;
 
@@ -39,12 +40,37 @@ public class Menu extends JPanel {
         tresorBoto.addActionListener(e -> {
             Variables.colocar = "TRESOR";
         });
+        canviarVelocitatBoto = crearBoto("CANVIAR VELOCITAT");
+        canviarVelocitatBoto.addActionListener(e -> {
+            boolean surt = false;
+            while (!surt) {
+                String input = JOptionPane.showInputDialog(null, "Nova velocitat en milisegons (ms):", "ms",
+                        JOptionPane.QUESTION_MESSAGE);
+
+                if (input != null) {
+
+                    try {
+                        int velocitat = Integer.parseInt(input);
+                        Variables.novaVelocitat(velocitat);
+                        surt = true;
+                    } catch (NumberFormatException error) {
+                        JOptionPane.showMessageDialog(null, "Ingressa un nombre acceptat.", "Error",
+                                JOptionPane.ERROR_MESSAGE);
+                    }
+
+                } else {
+                    JOptionPane.showMessageDialog(null, "Operació cancelada", "Aviso", JOptionPane.WARNING_MESSAGE);
+                    break;
+                }
+            }
+        });
 
         setLayout(new FlowLayout(FlowLayout.CENTER));
         add(iniciBoto);
         add(monstreBoto);
         add(precipiciBoto);
         add(tresorBoto);
+        add(canviarVelocitatBoto);
     }
 
     public static void iniciarCerca() {
@@ -62,7 +88,7 @@ public class Menu extends JPanel {
     private JButton crearBoto(String texte) {
         // Crear el botón
         JButton boto = new JButton(texte);
-        boto.setPreferredSize(new Dimension(120, 40)); // Ajustar tamaño del botón
+        boto.setPreferredSize(new Dimension(200, 40)); // Ajustar tamaño del botón
         boto.setFont(new Font("Arial", Font.BOLD, 16)); // Cambiar la fuente y tamaño
         boto.setForeground(Color.WHITE); // Texto en blanco
         boto.setFocusPainted(false); // Eliminar borde de enfoque
