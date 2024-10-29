@@ -1,8 +1,9 @@
 package code;
 
-import java.awt.*;
 import javax.swing.*;
 import javax.swing.border.Border;
+
+import java.awt.*;
 
 public class Menu extends JPanel {
     private static final int HEIGHT = 50;
@@ -11,25 +12,32 @@ public class Menu extends JPanel {
     private JButton precipiciBoto;
     private JButton tresorBoto;
 
+    private boolean cercaIniciada = false;
+
     public Menu(int width) {
         setBackground(Color.LIGHT_GRAY);
         setPreferredSize(new Dimension(width, HEIGHT));
 
         iniciBoto = crearBoto("INICIAR");
         iniciBoto.addActionListener(e -> {
-
+            if (cercaIniciada) {
+                aturarCerca();
+            } else {
+                iniciarCerca();
+            }
+            cercaIniciada = !cercaIniciada;
         });
         monstreBoto = crearBoto("MONSTRE");
         monstreBoto.addActionListener(e -> {
-            Casella.colocar = "MONSTRE";
+            Variables.colocar = "MONSTRE";
         });
         precipiciBoto = crearBoto("PRECIPICI");
         precipiciBoto.addActionListener(e -> {
-            Casella.colocar = "PRECIPICI";
+            Variables.colocar = "PRECIPICI";
         });
         tresorBoto = crearBoto("TRESOR");
         tresorBoto.addActionListener(e -> {
-            Casella.colocar = "TRESOR";
+            Variables.colocar = "TRESOR";
         });
 
         setLayout(new FlowLayout(FlowLayout.CENTER));
@@ -37,6 +45,18 @@ public class Menu extends JPanel {
         add(monstreBoto);
         add(precipiciBoto);
         add(tresorBoto);
+    }
+
+    public static void iniciarCerca() {
+        if (!Variables.timer.isRunning()) {
+            Variables.timer.start();
+        }
+    }
+
+    public static void aturarCerca() {
+        if (Variables.timer.isRunning()) {
+            Variables.timer.stop();
+        }
     }
 
     private JButton crearBoto(String texte) {

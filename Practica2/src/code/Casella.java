@@ -1,60 +1,74 @@
 package code;
 
 import javax.swing.*;
+
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class Casella extends JPanel {
     private final String path = "Practica2/src/assets/";
     private final ImageIcon monstreIcon = new ImageIcon(path + "monstre.png");
     private final ImageIcon precipiciIcon = new ImageIcon(path + "precipici.png");
     private final ImageIcon tresorIcon = new ImageIcon(path + "tresor.png");
+    private final ImageIcon agentIcon = new ImageIcon(path + "agent.png");
 
     // estatsPossibles = { "BUID", "MONSTRE", "PRECIPICI", "TRESOR", "AGENT" };
-    private static final String buid = "BUID";
-    private static final String monstre = "MONSTRE";
-    private static final String precipici = "PRECIPICI";
-    private static final String tresor = "TRESOR";
-    private String estatCasella = buid;
+    private String estatCasella = Constants.BUID;
 
-    public static String colocar = buid;
-    private static boolean monstreColocat = false;
-    private static boolean tresorColocat = false;
-    public MouseAdapter mouseAdapter;
+    public Casella(boolean inicial) {
 
-    public Casella() {
         setLayout(new BorderLayout());
 
-        mouseAdapter = new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent e) {
-                if (SwingUtilities.isLeftMouseButton(e) && estatCasella == buid
-                        && ((!monstreColocat && colocar == monstre)
-                                || (!tresorColocat && colocar == tresor) || colocar == precipici)) {
-                    setEstatCasella(colocar);
-                    if (colocar == monstre) {
-                        monstreColocat = true;
-                    } else if (colocar == tresor) {
-                        tresorColocat = true;
-                    }
-                } else if (SwingUtilities.isRightMouseButton(e) && estatCasella != buid) {
-                    if (estatCasella == monstre) {
-                        monstreColocat = false;
-                    } else if (estatCasella == tresor) {
-                        tresorColocat = false;
-                    }
-                    setEstatCasella(buid);
-                }
-            }
-        };
+        if (inicial) {
+            MouseAdapter mouseAdapter = new MouseAdapter() {
+                @Override
+                public void mousePressed(MouseEvent e) {
+                    if (SwingUtilities.isLeftMouseButton(e) && estatCasella == Constants.BUID
+                            && ((Variables.nMonstres != Constants.MONSTRES_TOTALS
+                                    && Variables.colocar == Constants.MONSTRE)
+                                    || (Variables.nTresors != Constants.TRESORS_TOTALS
+                                            && Variables.colocar == Constants.TRESOR)
+                                    || Variables.colocar == Constants.PRECIPICI)) {
 
-        addMouseListener(mouseAdapter);
-        addMouseMotionListener(mouseAdapter);
+                        if (setEstatCasella(Variables.colocar)) {
+                            if (Variables.colocar == Constants.MONSTRE) {
+                                Variables.nMonstres++;
+                            } else if (Variables.colocar == Constants.TRESOR) {
+                                Variables.nTresors++;
+                            }
+                        }
+
+                    } else if (SwingUtilities.isRightMouseButton(e)
+                            && estatCasella != Constants.BUID && estatCasella != Constants.AGENT) {
+
+                        if (estatCasella == Constants.MONSTRE) {
+                            Variables.nMonstres--;
+                        } else if (estatCasella == Constants.TRESOR) {
+                            Variables.nTresors--;
+                        }
+
+                        setEstatCasella(Constants.BUID);
+                    }
+                }
+            };
+
+            addMouseListener(mouseAdapter);
+            addMouseMotionListener(mouseAdapter);
+        }
     }
 
-    public void setEstatCasella(String nouEstat) {
-        estatCasella = nouEstat;
-        repaint();
+    public String getEstatCasella() {
+        return estatCasella;
+    }
+
+    public boolean setEstatCasella(String nouEstat) {
+        if (nouEstat == Constants.BUID || estatCasella == Constants.BUID) {
+            estatCasella = nouEstat;
+            repaint();
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -71,12 +85,14 @@ public class Casella extends JPanel {
         int maxHeight = (int) (getHeight() * 0.9);
 
         ImageIcon iconToUse = null;
-        if (estatCasella == monstre) {
+        if (estatCasella == Constants.MONSTRE) {
             iconToUse = monstreIcon;
-        } else if (estatCasella == precipici) {
+        } else if (estatCasella == Constants.PRECIPICI) {
             iconToUse = precipiciIcon;
-        } else if (estatCasella == tresor) {
+        } else if (estatCasella == Constants.TRESOR) {
             iconToUse = tresorIcon;
+        } else if (estatCasella == Constants.AGENT) {
+            iconToUse = agentIcon;
         }
 
         if (iconToUse != null) {
