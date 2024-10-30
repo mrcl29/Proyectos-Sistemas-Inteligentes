@@ -23,6 +23,7 @@ public class Menu extends JPanel {
         iniciBoto.addActionListener(e -> {
             if (cercaIniciada) {
                 aturarCerca();
+                Main.reinici();
             } else {
                 iniciarCerca();
             }

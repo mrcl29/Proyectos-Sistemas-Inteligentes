@@ -6,6 +6,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class Variables extends Constants {
+    public static Escenari escenari;
+    public static Agent agent;
+
     public static int tamanyEscenari;
 
     public static Casella[][] matriuEscenari;
@@ -20,6 +23,7 @@ public class Variables extends Constants {
         timer = new Timer(velocitat, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                agent.moviment();
             }
         });
     }

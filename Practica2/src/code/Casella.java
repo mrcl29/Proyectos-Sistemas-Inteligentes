@@ -61,6 +61,10 @@ public class Casella extends JPanel {
         return estatCasella;
     }
 
+    public boolean getEsSortida() {
+        return esSortida;
+    }
+
     public void setEstatCasella(String nouEstat) {
         if (nouEstat == Constants.BUID && esSortida) {
             estatCasella = Constants.SORTIDA;

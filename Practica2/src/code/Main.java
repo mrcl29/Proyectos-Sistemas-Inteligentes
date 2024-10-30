@@ -4,10 +4,7 @@ import javax.swing.*;
 
 import java.awt.BorderLayout;
 
-public class Main {
-    private static Escenari escenari;
-    private static Agent agent;
-
+public class Main extends Variables {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
 
@@ -53,5 +50,14 @@ public class Main {
 
             frame.setVisible(true);
         });
+    }
+
+    public static void reinici() {
+        if (Variables.matriuEscenari[agent.getFila()][agent.getColumna()].getEsSortida()) {
+            Variables.matriuEscenari[agent.getFila()][agent.getColumna()].setEstatCasella(Constants.SORTIDA);
+        } else {
+            Variables.matriuEscenari[agent.getFila()][agent.getColumna()].setEstatCasella(Constants.BUID);
+        }
+        agent = new Agent(Constants.FILA_INICI, Constants.COLUMNA_INICI);
     }
 }

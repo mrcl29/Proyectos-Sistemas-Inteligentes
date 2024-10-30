@@ -1,5 +1,8 @@
 package code;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.swing.ImageIcon;
 
 public class Constants {
@@ -22,4 +25,12 @@ public class Constants {
 
     public static final int FILA_INICI = 0;
     public static final int COLUMNA_INICI = 0;
+
+    public static final Map<String, int[]> MOVIMIENTS = new HashMap<>();
+    static {
+        MOVIMIENTS.put("NORD", new int[] { -1, 0 });
+        MOVIMIENTS.put("SUD", new int[] { 1, 0 });
+        MOVIMIENTS.put("EST", new int[] { 0, 1 });
+        MOVIMIENTS.put("OEST", new int[] { 0, -1 });
+    }
 }
