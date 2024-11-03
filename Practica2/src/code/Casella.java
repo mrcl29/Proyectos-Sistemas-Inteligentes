@@ -20,32 +20,34 @@ public class Casella extends JPanel {
             MouseAdapter mouseAdapter = new MouseAdapter() {
                 @Override
                 public void mousePressed(MouseEvent e) {
-                    if (SwingUtilities.isLeftMouseButton(e) && estatCasella == Constants.BUID
-                            && ((Variables.nMonstres != Constants.MONSTRES_TOTALS
-                                    && Variables.colocar == Constants.MONSTRE)
-                                    || (Variables.nTresors != Constants.TRESORS_TOTALS
-                                            && Variables.colocar == Constants.TRESOR)
-                                    || Variables.colocar == Constants.PRECIPICI)) {
+                    if (!Variables.cercaIniciada) {
+                        if (SwingUtilities.isLeftMouseButton(e) && estatCasella == Constants.BUID
+                                && ((Variables.nMonstres != Constants.MONSTRES_TOTALS
+                                        && Variables.colocar == Constants.MONSTRE)
+                                        || (Variables.nTresors != Constants.TRESORS_TOTALS
+                                                && Variables.colocar == Constants.TRESOR)
+                                        || Variables.colocar == Constants.PRECIPICI)) {
 
-                        setEstatCasella(Variables.colocar);
+                            setEstatCasella(Variables.colocar);
 
-                        if (Variables.colocar == Constants.MONSTRE) {
-                            Variables.nMonstres++;
-                        } else if (Variables.colocar == Constants.TRESOR) {
-                            Variables.nTresors++;
+                            if (Variables.colocar == Constants.MONSTRE) {
+                                Variables.nMonstres++;
+                            } else if (Variables.colocar == Constants.TRESOR) {
+                                Variables.nTresors++;
+                            }
+
+                        } else if (SwingUtilities.isRightMouseButton(e)
+                                && estatCasella != Constants.BUID && estatCasella != Constants.AGENT
+                                && estatCasella != Constants.SORTIDA) {
+
+                            if (estatCasella == Constants.MONSTRE) {
+                                Variables.nMonstres--;
+                            } else if (estatCasella == Constants.TRESOR) {
+                                Variables.nTresors--;
+                            }
+
+                            setEstatCasella(Constants.BUID);
                         }
-
-                    } else if (SwingUtilities.isRightMouseButton(e)
-                            && estatCasella != Constants.BUID && estatCasella != Constants.AGENT
-                            && estatCasella != Constants.SORTIDA) {
-
-                        if (estatCasella == Constants.MONSTRE) {
-                            Variables.nMonstres--;
-                        } else if (estatCasella == Constants.TRESOR) {
-                            Variables.nTresors--;
-                        }
-
-                        setEstatCasella(Constants.BUID);
                     }
                 }
             };

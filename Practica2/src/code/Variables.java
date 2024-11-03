@@ -17,6 +17,8 @@ public class Variables extends Constants {
     public static int nMonstres;
     public static int nTresors;
 
+    public static boolean cercaIniciada = false;
+
     public static Timer timer;
 
     public static void novaVelocitat(int velocitat) {

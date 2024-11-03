@@ -46,7 +46,7 @@ public class Main extends Variables {
 
             agent = new Agent(Constants.FILA_INICI, Constants.COLUMNA_INICI);
 
-            Variables.novaVelocitat(500);
+            Variables.novaVelocitat(400);
 
             frame.setVisible(true);
         });
@@ -59,5 +59,8 @@ public class Main extends Variables {
             Variables.matriuEscenari[agent.getFila()][agent.getColumna()].setEstatCasella(Constants.BUID);
         }
         agent = new Agent(Constants.FILA_INICI, Constants.COLUMNA_INICI);
+        Variables.novaVelocitat(400);
+        timer.stop();
+        cercaIniciada = false;
     }
 }

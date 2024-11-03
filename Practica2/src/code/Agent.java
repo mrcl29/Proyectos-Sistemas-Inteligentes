@@ -1,87 +1,129 @@
 package code;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Stack;
+
+import javax.swing.JOptionPane;
 
 public class Agent extends Variables {
     private int fila;
     private int columna;
 
-    private Map<String, ArrayList<Posicio>> mapa = new HashMap<>();
+    private ArrayList<Posicio> perill;
+    private ArrayList<Posicio> visitades;
+    private Stack<Posicio> cami;
 
-    private String[] direccio = { "NORD", "EST", "SUD", "OEST" };// NORD, EST, SUD, OEST
-    private int direccio_idx = 0;
+    private String[] direccio = { "NORD", "EST", "SUD", "OEST" };
+    private int direccioActual;
 
-    private boolean teTresor = false;
+    private boolean teTresor;
 
     public Agent(int fila, int columna) {
         this.fila = fila;
         this.columna = columna;
-        ArrayList<Posicio> entrada = new ArrayList<>();
-        entrada.add(new Posicio(fila, columna));
-        mapa.put("ENTRADA", entrada);
-        mapa.put("VISITADA", new ArrayList<>());
-        mapa.put("MONSTRE", new ArrayList<>());
-        mapa.put("PRECIPICI", new ArrayList<>());
+        teTresor = false;
+        perill = new ArrayList<>();
+        visitades = new ArrayList<>();
+        cami = new Stack<>();
+        direccioActual = 0;
         matriuEscenari[fila][columna].setEstatCasella(AGENT);
+        visitades.add(new Posicio(fila, columna));
+        cami.push(new Posicio(fila, columna));
     }
 
     public void moviment() {
-        int novaFila = fila + MOVIMIENTS.get(direccio[direccio_idx % direccio.length])[0];
-        int novaColumna = columna + MOVIMIENTS.get(direccio[direccio_idx % direccio.length])[1];
-        Posicio pos_aux = new Posicio(novaFila, novaColumna);
-        while (mapa.get(MONSTRE).contains(pos_aux) || mapa.get(PRECIPICI).contains(pos_aux)
-                || foraDelEscenari(novaFila, novaColumna)) {
-            direccio_idx++;
-            novaFila = fila + MOVIMIENTS.get(direccio[direccio_idx % direccio.length])[0];
-            novaColumna = columna + MOVIMIENTS.get(direccio[direccio_idx % direccio.length])[1];
-            pos_aux = new Posicio(novaFila, novaColumna);
-        }
-        if (!mapa.get("VISITADA").contains(pos_aux) || senseOpcio()) {
-            String estatCasella = matriuEscenari[novaFila][novaColumna].getEstatCasella();
-            if (estatCasella == BUID) {
-                movimentCasella(novaFila, novaColumna);
-            } else if (estatCasella == MONSTRE) {
-                afegirCasellaNoVisitable(MONSTRE, novaFila, novaColumna);
-            } else if (estatCasella == PRECIPICI) {
-                afegirCasellaNoVisitable(PRECIPICI, novaFila, novaColumna);
-            } else if (estatCasella == TRESOR) {
-                movimentCasella(novaFila, novaColumna);
-                teTresor = true;
-            }
+        Posicio novaPosicio = trobarNovaPosicioValida();
+        if (novaPosicio != null && !teTresor) {
+            moureACasella(novaPosicio.getFila(), novaPosicio.getColumna());
         } else {
-            direccio_idx++;
+            tornarEnrere();
         }
     }
 
-    public void afegirCasellaNoVisitable(String cosaTrobada, int fila, int columna) {
-        mapa.get(cosaTrobada).add(new Posicio(fila, columna));
-        direccio_idx++;
+    private Posicio trobarNovaPosicioValida() {
+        for (int i = 0; i < direccio.length; i++) {
+            int index = (direccioActual + i) % direccio.length;
+            int novaFila = fila + MOVIMIENTS.get(direccio[index])[0];
+            int novaColumna = columna + MOVIMIENTS.get(direccio[index])[1];
+            Posicio novaPosicio = new Posicio(novaFila, novaColumna);
+
+            if (!foraDelEscenari(novaFila, novaColumna) && !perill.contains(novaPosicio)
+                    && !visitades.contains(novaPosicio)) {
+                direccioActual = index;
+                return novaPosicio;
+            }
+        }
+        return null;
     }
 
-    public void movimentCasella(int novaFila, int novaColumna) {
+    private void moureACasella(int novaFila, int novaColumna) {
+        String estatCasella = matriuEscenari[novaFila][novaColumna].getEstatCasella();
+
+        if (estatCasella.equals(BUID) || estatCasella.equals(SORTIDA)) {
+            realitzarMoviment(novaFila, novaColumna);
+        } else if (estatCasella.equals(TRESOR)) {
+            realitzarMoviment(novaFila, novaColumna);
+            teTresor = true;
+        } else if (estatCasella.equals(MONSTRE) || estatCasella.equals(PRECIPICI)) {
+            perill.add(new Posicio(novaFila, novaColumna));
+            direccioActual = (direccioActual + 1) % direccio.length;
+        }
+    }
+
+    private void tornarEnrere() {
+        if (!cami.isEmpty()) {
+
+            Posicio anteriorPosicio = cami.peek();
+            int passosFila = anteriorPosicio.getFila() - fila;
+            int passosColumna = anteriorPosicio.getColumna() - columna;
+
+            // Mover una casilla a la vez
+            if (passosFila != 0) {
+                realitzarMoviment(fila + Integer.signum(passosFila), columna);
+            } else if (passosColumna != 0) {
+                realitzarMoviment(fila, columna + Integer.signum(passosColumna));
+            }
+
+            System.out.println("Tornant enrere a: " + fila + ", " + columna);
+            cami.pop(); // Eliminar la posición actual
+        } else if (teTresor) {
+            Variables.nTresors--;
+            JOptionPane.showMessageDialog(null, "Tresor trobat!!!", "Èxit",
+                    JOptionPane.INFORMATION_MESSAGE);
+            Main.reinici();
+        } else {
+            moureACasellaVisitada();
+        }
+    }
+
+    private void moureACasellaVisitada() {
+        for (int i = 0; i < direccio.length; i++) {
+            int novaFila = fila + MOVIMIENTS.get(direccio[i])[0];
+            int novaColumna = columna + MOVIMIENTS.get(direccio[i])[1];
+
+            if (!foraDelEscenari(novaFila, novaColumna) && !perill.contains(new Posicio(novaFila, novaColumna))) {
+                realitzarMoviment(novaFila, novaColumna);
+                direccioActual = i;
+                System.out.println("Movent-se a una casella ja visitada: " + novaFila + ", " + novaColumna);
+                return;
+            }
+        }
+        System.out.println("L'agent està completament bloquejat i no pot moure's.");
+    }
+
+    private void realitzarMoviment(int novaFila, int novaColumna) {
         matriuEscenari[fila][columna].setEstatCasella(BUID);
-        mapa.get("VISITADA").add(new Posicio(fila, columna));
         fila = novaFila;
         columna = novaColumna;
         matriuEscenari[fila][columna].setEstatCasella(AGENT);
-    }
-
-    public boolean foraDelEscenari(int fila, int columna) {
-        return fila < 0 || fila >= tamanyEscenari || columna < 0 || columna >= tamanyEscenari;
-    }
-
-    public boolean senseOpcio() {
-        for (int i = 0; i < 4; i++) {
-            int novaFila = fila + MOVIMIENTS.get(direccio[i % direccio.length])[0];
-            int novaColumna = columna + MOVIMIENTS.get(direccio[i % direccio.length])[1];
-            Posicio pos_aux = new Posicio(novaFila, novaColumna);
-            if (!mapa.get("VISITADA").contains(pos_aux) && !foraDelEscenari(novaFila, novaColumna)) {
-                return false;
-            }
+        if (!visitades.contains(new Posicio(fila, columna))) {
+            visitades.add(new Posicio(fila, columna));
         }
-        return true;
+        cami.push(new Posicio(fila, columna));
+    }
+
+    public boolean foraDelEscenari(int novaFila, int novaColumna) {
+        return novaFila < 0 || novaFila >= tamanyEscenari || novaColumna < 0 || novaColumna >= tamanyEscenari;
     }
 
     public int getFila() {
@@ -90,5 +132,9 @@ public class Agent extends Variables {
 
     public int getColumna() {
         return columna;
+    }
+
+    public boolean teTresor() {
+        return teTresor;
     }
 }

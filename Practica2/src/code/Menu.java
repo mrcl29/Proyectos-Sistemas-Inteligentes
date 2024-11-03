@@ -13,21 +13,20 @@ public class Menu extends JPanel {
     private JButton tresorBoto;
     private JButton canviarVelocitatBoto;
 
-    private boolean cercaIniciada = false;
-
+    @SuppressWarnings("unused")
     public Menu(int width) {
         setBackground(Color.LIGHT_GRAY);
         setPreferredSize(new Dimension(width, HEIGHT));
 
         iniciBoto = crearBoto("INICIAR");
         iniciBoto.addActionListener(e -> {
-            if (cercaIniciada) {
+            if (Variables.cercaIniciada) {
                 aturarCerca();
                 Main.reinici();
             } else {
                 iniciarCerca();
             }
-            cercaIniciada = !cercaIniciada;
+            Variables.cercaIniciada = !Variables.cercaIniciada;
         });
         monstreBoto = crearBoto("MONSTRE");
         monstreBoto.addActionListener(e -> {
