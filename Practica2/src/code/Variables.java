@@ -19,15 +19,19 @@ public class Variables extends Constants {
 
     public static boolean cercaIniciada = false;
 
-    public static Timer timer;
+    public static Timer timer = new Timer(500, new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            agent.moviment();
+        }
+    });
 
     public static void novaVelocitat(int velocitat) {
-        timer = new Timer(velocitat, new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                agent.moviment();
-            }
-        });
+        timer.setDelay(velocitat);
+        // Si el timer ya está en marcha, reinícialo para aplicar el nuevo delay
+        if (timer.isRunning()) {
+            timer.restart();
+        }
     }
 
 }

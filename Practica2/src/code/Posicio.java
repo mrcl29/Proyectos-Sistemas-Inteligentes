@@ -5,10 +5,21 @@ import java.util.Objects;
 public class Posicio {
     public int fila;
     public int columna;
+    public int g;
+    public int h;
+    public Posicio pare;
 
     public Posicio(int fila, int columna) {
         this.fila = fila;
         this.columna = columna;
+    }
+
+    Posicio(int fila, int columna, int g, int h, Posicio pare) {
+        this.fila = fila;
+        this.columna = columna;
+        this.g = g;
+        this.h = h;
+        this.pare = pare;
     }
 
     @Override
@@ -26,19 +37,7 @@ public class Posicio {
         return Objects.hash(fila, columna);
     }
 
-    public int getFila() {
-        return fila;
-    }
-
-    public void setFila(int fila) {
-        this.fila = fila;
-    }
-
-    public int getColumna() {
-        return columna;
-    }
-
-    public void setColumna(int columna) {
-        this.columna = columna;
+    int f() {
+        return g + h;
     }
 }

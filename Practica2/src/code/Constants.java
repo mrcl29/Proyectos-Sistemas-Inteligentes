@@ -6,12 +6,14 @@ import java.util.Map;
 import javax.swing.ImageIcon;
 
 public class Constants {
-    public static final String path = "Practica2/src/assets/";
-    public static final ImageIcon MONSTRE_ICON = new ImageIcon(path + "monstre.png");
-    public static final ImageIcon PRECIPICI_ICON = new ImageIcon(path + "precipici.png");
-    public static final ImageIcon TRESOR_ICON = new ImageIcon(path + "tresor.png");
-    public static final ImageIcon AGENT_ICON = new ImageIcon(path + "agent.png");
-    public static final ImageIcon SORTIDA_ICON = new ImageIcon(path + "sortida.png");
+    public static final int ALTURA_MENU = 50;
+
+    public static final String PATH = "Practica2/src/assets/";
+    public static final ImageIcon MONSTRE_ICON = new ImageIcon(PATH + "monstre.png");
+    public static final ImageIcon PRECIPICI_ICON = new ImageIcon(PATH + "precipici.png");
+    public static final ImageIcon TRESOR_ICON = new ImageIcon(PATH + "tresor.png");
+    public static final ImageIcon AGENT_ICON = new ImageIcon(PATH + "agent.png");
+    public static final ImageIcon SORTIDA_ICON = new ImageIcon(PATH + "sortida.png");
 
     public static final String BUID = "BUID";
     public static final String MONSTRE = "MONSTRE";
@@ -25,6 +27,8 @@ public class Constants {
 
     public static final int FILA_INICI = 0;
     public static final int COLUMNA_INICI = 0;
+
+    public static final String[] DIRECCIO = { "NORD", "EST", "SUD", "OEST" };
 
     public static final Map<String, int[]> MOVIMIENTS = new HashMap<>();
     static {

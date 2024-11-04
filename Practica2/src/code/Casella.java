@@ -1,7 +1,6 @@
 package code;
 
 import javax.swing.*;
-
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -17,10 +16,12 @@ public class Casella extends JPanel {
         setLayout(new BorderLayout());
 
         if (!esSortida) {
+            // Afegir un escoltador de ratolí per a les caselles que no són sortida
             MouseAdapter mouseAdapter = new MouseAdapter() {
                 @Override
                 public void mousePressed(MouseEvent e) {
                     if (!Variables.cercaIniciada) {
+                        // Gestió del clic esquerre per col·locar elements
                         if (SwingUtilities.isLeftMouseButton(e) && estatCasella == Constants.BUID
                                 && ((Variables.nMonstres != Constants.MONSTRES_TOTALS
                                         && Variables.colocar == Constants.MONSTRE)
@@ -30,16 +31,20 @@ public class Casella extends JPanel {
 
                             setEstatCasella(Variables.colocar);
 
+                            // Actualitzar comptadors
                             if (Variables.colocar == Constants.MONSTRE) {
                                 Variables.nMonstres++;
                             } else if (Variables.colocar == Constants.TRESOR) {
                                 Variables.nTresors++;
                             }
 
-                        } else if (SwingUtilities.isRightMouseButton(e)
+                        }
+                        // Gestió del clic dret per eliminar elements
+                        else if (SwingUtilities.isRightMouseButton(e)
                                 && estatCasella != Constants.BUID && estatCasella != Constants.AGENT
                                 && estatCasella != Constants.SORTIDA) {
 
+                            // Actualitzar comptadors
                             if (estatCasella == Constants.MONSTRE) {
                                 Variables.nMonstres--;
                             } else if (estatCasella == Constants.TRESOR) {
@@ -59,6 +64,7 @@ public class Casella extends JPanel {
         }
     }
 
+    // Mètodes getters i setters
     public String getEstatCasella() {
         return estatCasella;
     }
@@ -81,14 +87,15 @@ public class Casella extends JPanel {
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g.create();
 
-        // Si no es paret, solo dibujar el borde negro
+        // Dibuixar el contorn negre de la casella
         g2d.setColor(Color.BLACK);
         g2d.drawRect(0, 0, getWidth(), getHeight());
 
-        // Calcular el tamaño máximo para la imagen manteniendo el aspecto
+        // Calcular la mida màxima per a la imatge mantenint l'aspecte
         int maxWidth = (int) (getWidth() * 0.9);
         int maxHeight = (int) (getHeight() * 0.9);
 
+        // Seleccionar la icona adequada segons l'estat de la casella
         ImageIcon iconToUse = null;
         if (estatCasella == Constants.MONSTRE) {
             iconToUse = Constants.MONSTRE_ICON;
@@ -107,18 +114,18 @@ public class Casella extends JPanel {
             int originalWidth = img.getWidth(this);
             int originalHeight = img.getHeight(this);
 
-            // Calcular el factor de escala
+            // Calcular el factor d'escala
             double scale = Math.min((double) maxWidth / originalWidth, (double) maxHeight / originalHeight);
 
-            // Calcular las nuevas dimensiones
+            // Calcular les noves dimensions
             int scaledWidth = (int) (originalWidth * scale);
             int scaledHeight = (int) (originalHeight * scale);
 
-            // Calcular la posición para centrar la imagen
+            // Calcular la posició per centrar la imatge
             int x = (getWidth() - scaledWidth) / 2;
             int y = (getHeight() - scaledHeight) / 2;
 
-            // Dibujar la imagen escalada
+            // Dibuixar la imatge escalada
             g2d.drawImage(img, x, y, scaledWidth, scaledHeight, this);
         }
 
