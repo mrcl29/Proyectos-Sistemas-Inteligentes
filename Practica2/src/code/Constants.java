@@ -22,7 +22,7 @@ public class Constants {
     public static final String AGENT = "AGENT";
     public static final String SORTIDA = "SORTIDA";
 
-    public static final int MONSTRES_TOTALS = 1;
+    public static final int MONSTRES_TOTALS = -1;
     public static final int TRESORS_TOTALS = 1;
 
     public static final int FILA_INICI = 0;

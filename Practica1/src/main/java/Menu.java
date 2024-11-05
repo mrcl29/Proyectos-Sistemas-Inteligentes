@@ -8,6 +8,7 @@ public class Menu {
     private JButton inicioButton;
     private boolean isRunning = false;
 
+    @SuppressWarnings("unused")
     public Menu(int width, Robot robot) {
 
         menuPanel = new JPanel();

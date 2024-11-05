@@ -185,6 +185,17 @@ public class Main {
     }
 
     private static boolean paretsDiagonals() {
+        if (!seguintParet) {
+            if (direccio == "NORD") {
+                return escenari.getEsParet(fila + 1, columna - 1);
+            } else if (direccio == "EST") {
+                return escenari.getEsParet(fila - 1, columna - 1);
+            } else if (direccio == "SUD") {
+                return escenari.getEsParet(fila + 1, columna + 1);
+            } else if (direccio == "OEST") {
+                return escenari.getEsParet(fila - 1, columna + 1);
+            }
+        }
         return escenari.getEsParet(fila - 1, columna + 1) || escenari.getEsParet(fila + 1, columna + 1)
                 || escenari.getEsParet(fila + 1, columna - 1) || escenari.getEsParet(fila - 1, columna - 1);
     }
