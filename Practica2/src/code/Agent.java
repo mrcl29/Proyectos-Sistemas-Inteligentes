@@ -2,7 +2,9 @@ package code;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Stack;
 import javax.swing.JOptionPane;
@@ -10,8 +12,6 @@ import javax.swing.JOptionPane;
 public class Agent extends Variables {
     private int fila;
     private int columna;
-    private ArrayList<Posicio> perill;
-    private ArrayList<Posicio> visitades;
     private Stack<Posicio> cami;
     private int direccioActual;
     private boolean teTresor;
@@ -21,118 +21,14 @@ public class Agent extends Variables {
         this.fila = fila;
         this.columna = columna;
         teTresor = false;
-        perill = new ArrayList<>();
-        visitades = new ArrayList<>();
+        this.visitades = new HashMap<>();
         cami = new Stack<>();
         direccioActual = 0;
         matriuEscenari[fila][columna].setEstatCasella(AGENT);
-        visitades.add(new Posicio(fila, columna));
+        registrarVisita(fila, columna);
         cami.push(new Posicio(fila, columna));
     }
 
-    // Mètode principal per moure l'agent
-    public void moviment() {
-        Posicio novaPosicio = trobarNovaPosicioValida();
-        if (novaPosicio != null && !teTresor) {
-            moureACasella(novaPosicio.fila, novaPosicio.columna);
-        } else {
-            tornarEnrere();
-        }
-    }
-
-    // Cerca una nova posició vàlida per moure's
-    private Posicio trobarNovaPosicioValida() {
-        for (int i = 0; i < DIRECCIO.length; i++) {
-            int index = (direccioActual + i) % DIRECCIO.length;
-            int novaFila = fila + MOVIMIENTS.get(DIRECCIO[index])[0];
-            int novaColumna = columna + MOVIMIENTS.get(DIRECCIO[index])[1];
-            Posicio novaPosicio = new Posicio(novaFila, novaColumna);
-            if (!foraDelEscenari(novaFila, novaColumna) && !perill.contains(novaPosicio)
-                    && !visitades.contains(novaPosicio)) {
-                direccioActual = index;
-                return novaPosicio;
-            }
-        }
-        return null;
-    }
-
-    // Mou l'agent a una nova casella
-    private void moureACasella(int novaFila, int novaColumna) {
-        String estatCasella = matriuEscenari[novaFila][novaColumna].getEstatCasella();
-        if (estatCasella.equals(BUID) || estatCasella.equals(SORTIDA)) {
-            realitzarMoviment(novaFila, novaColumna);
-        } else if (estatCasella.equals(TRESOR)) {
-            realitzarMoviment(novaFila, novaColumna);
-            teTresor = true;
-        } else if (estatCasella.equals(MONSTRE) || estatCasella.equals(PRECIPICI)) {
-            perill.add(new Posicio(novaFila, novaColumna));
-            direccioActual = (direccioActual + 1) % DIRECCIO.length;
-        }
-    }
-
-    // Gestiona el retorn de l'agent
-    private void tornarEnrere() {
-        if (!cami.isEmpty() && teTresor) {
-            List<Posicio> caminoRetorno = calcularCamiTornada();
-            if (caminoRetorno != null && !caminoRetorno.isEmpty()) {
-                Posicio siguientePaso = caminoRetorno.get(0);
-                moureACasella(siguientePaso.fila, siguientePaso.columna);
-                if (FILA_INICI == siguientePaso.fila && COLUMNA_INICI == siguientePaso.columna) {
-                    nTresors = 0;
-                    JOptionPane.showMessageDialog(null, "Tresor trobat!!!", "Èxit", JOptionPane.INFORMATION_MESSAGE);
-                    Main.reinici();
-                }
-            }
-        } else if (!cami.isEmpty()) {
-            Posicio anteriorPosicio = cami.peek();
-            int passosFila = anteriorPosicio.fila - fila;
-            int passosColumna = anteriorPosicio.columna - columna;
-            // Moure una casella a la vegada
-            if (passosFila != 0) {
-                realitzarMoviment(fila + Integer.signum(passosFila), columna);
-            } else if (passosColumna != 0) {
-                realitzarMoviment(fila, columna + Integer.signum(passosColumna));
-            }
-            System.out.println("Tornant enrere a: " + fila + ", " + columna);
-            cami.pop(); // Eliminar la posició actual
-        } else if (!teTresor) {
-            moureACasellaVisitada();
-        }
-    }
-
-    // Mou l'agent a una casella ja visitada
-    private void moureACasellaVisitada() {
-        for (int i = 0; i < DIRECCIO.length; i++) {
-            int novaFila = fila + MOVIMIENTS.get(DIRECCIO[i])[0];
-            int novaColumna = columna + MOVIMIENTS.get(DIRECCIO[i])[1];
-            if (!foraDelEscenari(novaFila, novaColumna) && !perill.contains(new Posicio(novaFila, novaColumna))) {
-                realitzarMoviment(novaFila, novaColumna);
-                direccioActual = i;
-                System.out.println("Movent-se a una casella ja visitada: " + novaFila + ", " + novaColumna);
-                return;
-            }
-        }
-        System.out.println("L'agent està completament bloquejat i no pot moure's.");
-    }
-
-    // Realitza el moviment físic de l'agent
-    private void realitzarMoviment(int novaFila, int novaColumna) {
-        matriuEscenari[fila][columna].setEstatCasella(BUID);
-        fila = novaFila;
-        columna = novaColumna;
-        matriuEscenari[fila][columna].setEstatCasella(AGENT);
-        if (!visitades.contains(new Posicio(fila, columna))) {
-            visitades.add(new Posicio(fila, columna));
-        }
-        cami.push(new Posicio(fila, columna));
-    }
-
-    // Comprova si una posició està fora de l'escenari
-    public boolean foraDelEscenari(int novaFila, int novaColumna) {
-        return novaFila < 0 || novaFila >= tamanyEscenari || novaColumna < 0 || novaColumna >= tamanyEscenari;
-    }
-
-    // Getters
     public int getFila() {
         return fila;
     }
@@ -141,8 +37,316 @@ public class Agent extends Variables {
         return columna;
     }
 
-    public boolean teTresor() {
-        return teTresor;
+    ////////////////////////
+    private Map<Posicio, Boolean[]> mapaPercepcions = new HashMap<>();// hedor, brisa, resplandor
+    private Map<Posicio, Boolean[]> mapaPosibles = new HashMap<>();// posibleMosntre, posiblePrecipici
+    private ArrayList<Posicio> mapaOk = new ArrayList<>();
+    private Map<Posicio, Boolean[]> mapaPerills = new HashMap<>();// monstre, precipici
+    private Map<Posicio, Integer> visitades;
+
+    // Mètode principal per moure l'agent
+    public void moviment() {
+        if (teTresor) {
+            tornarInici();
+        } else {
+            registrarOk(fila, columna);
+            registrarVisita(fila, columna);
+            Boolean[] percepcions = getPercepcions(fila, columna);
+            registrarPercepcions(fila, columna, percepcions);
+            actualitzarPossiblesPerills(percepcions);
+            actualitzarBC();
+            if (percepcions[2] == true) {
+                // System.out
+                // .println("Tresor trobat a fila " + String.valueOf(fila) + ", columna "
+                // + String.valueOf(columna));
+                teTresor = true;
+            } else {
+                Posicio novaPosicio = trobarNovaPosicioValida();
+                if (novaPosicio != null) {
+                    realitzarMoviment(novaPosicio.fila, novaPosicio.columna);
+                } else {
+                    tornarEnrere();
+                }
+            }
+        }
+    }
+
+    // Realitza el moviment físic de l'agent
+    private void realitzarMoviment(int novaFila, int novaColumna) {
+        matriuEscenari[fila][columna].setEstatCasella(BUID);
+        fila = novaFila;
+        columna = novaColumna;
+        if (matriuEscenari[fila][columna].getEstatCasella() == TRESOR) {
+            matriuEscenari[fila][columna].setEstatCasella(TRESOR_AGENT);
+        } else {
+            matriuEscenari[fila][columna].setEstatCasella(AGENT);
+        }
+        // registrarVisita(fila, columna);
+        cami.push(new Posicio(fila, columna));
+    }
+
+    // Cerca una nova posició vàlida per moure's
+    private Posicio trobarNovaPosicioValida() {
+        List<Posicio> posicionsSenseVisitar = new ArrayList<>();
+        List<Posicio> posicionsMenysVisitades = new ArrayList<>();
+        int minVisites = Integer.MAX_VALUE;
+
+        for (int i = 0; i < DIRECCIO.length; i++) {
+            int index = (direccioActual + i) % DIRECCIO.length;
+            int novaFila = fila + MOVIMIENTS.get(DIRECCIO[index])[0];
+            int novaColumna = columna + MOVIMIENTS.get(DIRECCIO[index])[1];
+            Posicio novaPosicio = new Posicio(novaFila, novaColumna);
+
+            if (!foraDelEscenari(novaFila, novaColumna) && mapaOk.contains(novaPosicio)) {
+                if (!visitades.containsKey(novaPosicio)) {
+                    posicionsSenseVisitar.add(novaPosicio);
+                } else {
+                    int visites = visitades.get(novaPosicio);
+                    if (visites < minVisites) {
+                        minVisites = visites;
+                        posicionsMenysVisitades.clear();
+                        posicionsMenysVisitades.add(novaPosicio);
+                    } else if (visites == minVisites) {
+                        posicionsMenysVisitades.add(novaPosicio);
+                    }
+                }
+            }
+        }
+
+        if (!posicionsSenseVisitar.isEmpty()) {
+            return posicionsSenseVisitar.get(0);
+        } else if (!posicionsMenysVisitades.isEmpty()) {
+            return posicionsMenysVisitades.get(0);
+        }
+
+        return null;
+    }
+
+    private void registrarVisita(int fila, int columna) {
+        Posicio pos = new Posicio(fila, columna);
+        visitades.put(pos, visitades.getOrDefault(pos, 0) + 1);
+    }
+
+    private void registrarOk(int fila, int columna) {
+        Posicio pos = new Posicio(fila, columna);
+        Boolean[] aux = { false, false };
+        mapaPosibles.put(pos, aux);
+        mapaPerills.put(pos, aux);
+        mapaOk.add(pos);
+    }
+
+    private void registrarPercepcions(int fila, int columna, Boolean[] perc) {
+        Posicio pos = new Posicio(fila, columna);
+        mapaPercepcions.put(pos, perc);
+    }
+
+    private Boolean[] getPercepcions(int fila, int columna) {
+        boolean hedor = false;
+        boolean brisa = false;
+        boolean resplandor = false;
+
+        for (int i = 0; i < DIRECCIO.length; i++) {
+            int index = (direccioActual + i) % DIRECCIO.length;
+            int novaFila = fila + MOVIMIENTS.get(DIRECCIO[index])[0];
+            int novaColumna = columna + MOVIMIENTS.get(DIRECCIO[index])[1];
+            if (!foraDelEscenari(novaFila, novaColumna)) {
+                String estatCasella = matriuEscenari[novaFila][novaColumna].getEstatCasella();
+                if (estatCasella == MONSTRE) {
+                    hedor = true;
+                } else if (estatCasella == PRECIPICI) {
+                    brisa = true;
+                }
+            }
+        }
+
+        String estatCasella = matriuEscenari[fila][columna].getEstatCasella();
+        // System.out.println("Fila - Columna: " + String.valueOf(fila) + " - " +
+        // String.valueOf(columna) + " /// Estat = "
+        // + estatCasella);
+        if (estatCasella == TRESOR || estatCasella == TRESOR_AGENT) {
+            resplandor = true;
+        }
+
+        Boolean[] aux = { hedor, brisa, resplandor };
+        return aux;
+    }
+
+    // Comprova si una posició està fora de l'escenari
+    public boolean foraDelEscenari(int novaFila, int novaColumna) {
+        return novaFila < 0 || novaFila >= tamanyEscenari || novaColumna < 0 || novaColumna >= tamanyEscenari;
+    }
+
+    private void actualitzarPossiblesPerills(Boolean[] perc) {
+        for (int i = 0; i < DIRECCIO.length; i++) {
+            int index = (direccioActual + i) % DIRECCIO.length;
+            int novaFila = fila + MOVIMIENTS.get(DIRECCIO[index])[0];
+            int novaColumna = columna + MOVIMIENTS.get(DIRECCIO[index])[1];
+            Posicio novaPos = new Posicio(novaFila, novaColumna);
+
+            boolean foraEscenari = foraDelEscenari(novaFila, novaColumna);
+            boolean esOk = (mapaOk.contains(novaPos));
+            Boolean[] perills = mapaPerills.get(novaPos);
+            boolean esPerill;
+            if (perills != null) {
+                esPerill = (perills[0] == true || perills[1] == true);
+            } else {
+                esPerill = false;
+            }
+
+            if (!foraEscenari && !esOk && !esPerill) {
+                Boolean hedor = perc[0];
+                Boolean brisa = perc[1];
+
+                if (!hedor && !brisa) {
+                    mapaOk.add(novaPos);
+                }
+                Boolean[] aux = { hedor, brisa };
+                mapaPosibles.put(novaPos, aux);
+            }
+        }
+    }
+
+    private void actualitzarBC() {
+        for (int i = 0; i < tamanyEscenari; i++) {
+            for (int j = 0; j < tamanyEscenari; j++) {
+                Posicio pos = new Posicio(i, j);
+                Boolean[] perills = mapaPerills.get(pos);
+                if (perills != null) {
+                    if (!perills[0] && !perills[1]) {
+                        if (mapaPercepcions.containsKey(pos)) {
+                            Boolean[] perc = mapaPercepcions.get(pos);
+                            if (perc[0]) {
+                                registrarPerill(i, j, 0);
+                            }
+                            if (perc[1]) {
+                                registrarPerill(i, j, 1);
+                            }
+                            if (perc[0] || perc[1]) {
+                                break;
+                            }
+                        }
+                        if (mapaPosibles.containsKey(pos)) {
+                            Boolean[] posibles = mapaPosibles.get(pos);
+                            boolean esOkm = false;
+                            boolean esOkp = false;
+                            if (posibles[0]) {
+                                for (int t = 0; t < DIRECCIO.length; t++) {
+                                    int index = (direccioActual + t) % DIRECCIO.length;
+                                    int novaFila = i + MOVIMIENTS.get(DIRECCIO[index])[0];
+                                    int novaColumna = j + MOVIMIENTS.get(DIRECCIO[index])[1];
+                                    Posicio novaPos = new Posicio(novaFila, novaColumna);
+                                    Boolean[] percAdj = mapaPercepcions.get(novaPos);
+                                    if (!percAdj[0]) {
+                                        esOkm = true;
+                                        posibles[0] = false;
+                                        mapaPosibles.put(pos, posibles);
+                                    }
+                                }
+                            }
+                            if (posibles[1]) {
+                                for (int t = 0; t < DIRECCIO.length; t++) {
+                                    int index = (direccioActual + t) % DIRECCIO.length;
+                                    int novaFila = i + MOVIMIENTS.get(DIRECCIO[index])[0];
+                                    int novaColumna = j + MOVIMIENTS.get(DIRECCIO[index])[1];
+                                    Posicio novaPos = new Posicio(novaFila, novaColumna);
+                                    Boolean[] percAdj = mapaPercepcions.get(novaPos);
+                                    if (!percAdj[1]) {
+                                        esOkp = true;
+                                        posibles[1] = false;
+                                        mapaPosibles.put(pos, posibles);
+                                    }
+                                }
+                            }
+                            if (esOkm && esOkp) {
+                                mapaOk.add(pos);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private void registrarPerill(int fila, int columna, int tipusPerill) {
+        if (tipusPerill > -1 && tipusPerill < 2) {
+            int filaRestant = -1;
+            int columnaRestant = -1;
+            int contadorCaselles = 0;
+            for (int t = 0; t < DIRECCIO.length; t++) {
+                int index = (direccioActual + t) % DIRECCIO.length;
+                int novaFila = fila + MOVIMIENTS.get(DIRECCIO[index])[0];
+                int novaColumna = columna + MOVIMIENTS.get(DIRECCIO[index])[1];
+                Posicio novaPos = new Posicio(novaFila, novaColumna);
+
+                Boolean[] perills = mapaPerills.get(novaPos);
+                Boolean preci;
+                if (perills != null) {
+                    preci = perills[1 - tipusPerill];
+                } else {
+                    preci = false;
+                }
+
+                if (mapaOk.contains(novaPos) || foraDelEscenari(novaFila, novaColumna) || preci) {
+                    contadorCaselles++;
+                } else {
+                    filaRestant = novaFila;
+                    columnaRestant = novaColumna;
+                }
+            }
+            if (contadorCaselles == 3) {
+                Posicio posRestant = new Posicio(filaRestant, columnaRestant);
+                Boolean[] aux = { false, false };
+                if (mapaPerills.containsKey(posRestant)) {
+                    aux = mapaPerills.get(posRestant);
+                }
+                aux[tipusPerill] = true;
+                Boolean[] aux2 = { false, false };
+                mapaPosibles.put(posRestant, aux2);
+                mapaPerills.put(posRestant, aux);
+            }
+        }
+    }
+
+    // Mètode per tornar enrere a la casella anterior
+    private void tornarEnrere() {
+        if (!cami.isEmpty()) {
+            // Elimina la posició actual de la pila
+            // Posicio posicioActual = cami.pop();
+            cami.pop();
+            // Si la pila no està buida, torna a la posició anterior
+            if (!cami.isEmpty()) {
+                Posicio posicioAnterior = cami.peek();
+
+                // Actualitza les coordenades de l'agent
+                matriuEscenari[fila][columna].setEstatCasella(BUID); // Marca la casella actual com a buida
+                fila = posicioAnterior.fila;
+                columna = posicioAnterior.columna;
+                matriuEscenari[fila][columna].setEstatCasella(AGENT); // Marca la nova posició amb l'agent
+            }
+        }
+    }
+
+    // Mètode per tornar a la casella inicial movent-se una casella a la vegada amb
+    // l'algorisme A*
+    private void tornarInici() {
+        // Comprovar si ja estem a la casella inicial
+        if (fila == FILA_INICI && columna == COLUMNA_INICI) {
+            nTresors = 0;
+            JOptionPane.showMessageDialog(null, "Tresor trobat!!!", "Èxit", JOptionPane.INFORMATION_MESSAGE);
+            Main.reinici();
+            cercaIniciada = false;
+        }
+
+        // Calcular el camí més curt utilitzant A*
+        List<Posicio> cami = calcularCamiTornada();
+
+        // Si hi ha un camí vàlid, moure's a la següent casella
+        if (cami != null && !cami.isEmpty()) {
+            Posicio seguent = cami.get(0); // Primera posició del camí
+            realitzarMoviment(seguent.fila, seguent.columna); // Actualitzar la posició de l'agent
+        } else {
+            System.out.println("No s'ha trobat un camí de tornada a la casella inicial!");
+        }
     }
 
     // Calcula el camí de tornada utilitzant l'algorisme A*
@@ -150,7 +354,7 @@ public class Agent extends Variables {
         boolean[][] tablero = new boolean[matriuEscenari.length][matriuEscenari[0].length];
         for (int i = 0; i < tablero.length; i++) {
             for (int j = 0; j < tablero[i].length; j++) {
-                tablero[i][j] = (visitades.contains(new Posicio(i, j)) && !perill.contains(new Posicio(i, j)));
+                tablero[i][j] = (visitades.containsKey(new Posicio(i, j)));
             }
         }
         List<Posicio> camino = trobarcami(tablero, fila, columna, FILA_INICI, COLUMNA_INICI);
@@ -219,4 +423,5 @@ public class Agent extends Variables {
         }
         return cami;
     }
+
 }

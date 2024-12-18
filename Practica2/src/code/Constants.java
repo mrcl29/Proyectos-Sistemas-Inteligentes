@@ -17,10 +17,13 @@ public class Constants {
 
     public static final String BUID = "BUID";
     public static final String MONSTRE = "MONSTRE";
+    public static final String POSIBLE_MONSTRE = "POSIBLE_MONSTRE";
     public static final String PRECIPICI = "PRECIPICI";
+    public static final String POSIBLE_PRECIPICI = "POSIBLE_PRECIPICI";
     public static final String TRESOR = "TRESOR";
     public static final String AGENT = "AGENT";
     public static final String SORTIDA = "SORTIDA";
+    public static final String TRESOR_AGENT = "TRESOR_AGENT";
 
     public static final int MONSTRES_TOTALS = -1;
     public static final int TRESORS_TOTALS = 1;

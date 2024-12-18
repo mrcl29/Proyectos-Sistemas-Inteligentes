@@ -66,6 +66,7 @@ public class Main extends Variables {
         agent = new Agent(Constants.FILA_INICI, Constants.COLUMNA_INICI);
 
         // Aturar el temporitzador i reiniciar l'estat de cerca
+        nTresors = 0;
         timer.stop();
     }
 }

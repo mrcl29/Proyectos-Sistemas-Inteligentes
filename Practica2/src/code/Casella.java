@@ -103,7 +103,7 @@ public class Casella extends JPanel {
             iconToUse = Constants.PRECIPICI_ICON;
         } else if (estatCasella == Constants.TRESOR) {
             iconToUse = Constants.TRESOR_ICON;
-        } else if (estatCasella == Constants.AGENT) {
+        } else if (estatCasella == Constants.AGENT || estatCasella == Constants.TRESOR_AGENT) {
             iconToUse = Constants.AGENT_ICON;
         } else if (estatCasella == Constants.SORTIDA) {
             iconToUse = Constants.SORTIDA_ICON;

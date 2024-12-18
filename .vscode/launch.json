@@ -1,0 +1,35 @@
+{
+    // Use IntelliSense para saber los atributos posibles.
+    // Mantenga el puntero para ver las descripciones de los existentes atributos.
+    // Para más información, visite: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Current File",
+            "request": "launch",
+            "mainClass": "${file}"
+        },
+        {
+            "type": "java",
+            "name": "Main",
+            "request": "launch",
+            "mainClass": "Practica1.src.main.java.Main",
+            "projectName": "Practicas-Sistemas_Inteligentes_7e681e9b"
+        },
+        {
+            "type": "java",
+            "name": "Tablero",
+            "request": "launch",
+            "mainClass": "Tablero",
+            "projectName": "Practicas-Sistemas_Inteligentes_7e681e9b"
+        },
+        {
+            "type": "java",
+            "name": "Main(1)",
+            "request": "launch",
+            "mainClass": "code.Main",
+            "projectName": "Practicas-Sistemas_Inteligentes_7e681e9b"
+        }
+    ]
+}
