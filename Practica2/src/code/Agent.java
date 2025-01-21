@@ -85,41 +85,33 @@ public class Agent extends Variables {
         cami.push(new Posicio(fila, columna));
     }
 
-    // Cerca una nova posició vàlida per moure's
     private Posicio trobarNovaPosicioValida() {
-        List<Posicio> posicionsSenseVisitar = new ArrayList<>();
-        List<Posicio> posicionsMenysVisitades = new ArrayList<>();
+        List<Posicio> posicionsSegures = new ArrayList<>();
+        List<Posicio> posicionsRisc = new ArrayList<>();
         int minVisites = Integer.MAX_VALUE;
 
         for (int i = 0; i < DIRECCIO.length; i++) {
-            int index = (direccioActual + i) % DIRECCIO.length;
-            int novaFila = fila + MOVIMIENTS.get(DIRECCIO[index])[0];
-            int novaColumna = columna + MOVIMIENTS.get(DIRECCIO[index])[1];
-            Posicio novaPosicio = new Posicio(novaFila, novaColumna);
+            int novaFila = fila + MOVIMIENTS.get(DIRECCIO[i])[0];
+            int novaColumna = columna + MOVIMIENTS.get(DIRECCIO[i])[1];
+            Posicio novaPos = new Posicio(novaFila, novaColumna);
 
-            if (!foraDelEscenari(novaFila, novaColumna) && mapaOk.contains(novaPosicio)) {
-                if (!visitades.containsKey(novaPosicio)) {
-                    posicionsSenseVisitar.add(novaPosicio);
-                } else {
-                    int visites = visitades.get(novaPosicio);
-                    if (visites < minVisites) {
-                        minVisites = visites;
-                        posicionsMenysVisitades.clear();
-                        posicionsMenysVisitades.add(novaPosicio);
-                    } else if (visites == minVisites) {
-                        posicionsMenysVisitades.add(novaPosicio);
-                    }
+            if (!foraDelEscenari(novaFila, novaColumna) && mapaOk.contains(novaPos)) {
+                int visites = visitades.getOrDefault(novaPos, 0);
+                if (visites < minVisites) {
+                    minVisites = visites;
+                    posicionsSegures.add(novaPos);
                 }
+            } else if (mapaPosibles.containsKey(novaPos)) {
+                posicionsRisc.add(novaPos);
             }
         }
 
-        if (!posicionsSenseVisitar.isEmpty()) {
-            return posicionsSenseVisitar.get(0);
-        } else if (!posicionsMenysVisitades.isEmpty()) {
-            return posicionsMenysVisitades.get(0);
+        if (!posicionsSegures.isEmpty()) {
+            posicionsSegures.sort(Comparator.comparingInt(pos -> visitades.getOrDefault(pos, 0)));
+            return posicionsSegures.get(0);
         }
 
-        return null;
+        return posicionsRisc.isEmpty() ? null : posicionsRisc.get(0);
     }
 
     private void registrarVisita(int fila, int columna) {
